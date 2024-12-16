@@ -2,19 +2,20 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
+import Image from "next/image";
 import { Menu, X } from "lucide-react";
 import { GithubIcon, MessageSquare } from "lucide-react";
 import { useState } from "react";
 
 const navItems = [
   { href: "#features", label: "Features" },
-  { href: "#dashboard", label: "Dashboard" },
-  { href: "#pricing", label: "Pricing" },
+  { href: "#mission", label: "Mission" },
+  { href: "#cta", label: "Contact" },
 ];
 
 const socialLinks = [
   { 
-    href: "https://github.com/1habit", 
+    href: "https://github.com/joelarias1", 
     icon: (props: any) => (
       <GithubIcon {...props} fill="currentColor" />
     ), 
@@ -32,6 +33,22 @@ const socialLinks = [
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
 
+  const handleScroll = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    e.preventDefault();
+    const target = document.querySelector(href);
+    if (target) {
+      const navbarHeight = 80; // altura del navbar
+      const elementPosition = target.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - navbarHeight;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: "smooth"
+      });
+      setIsOpen(false);
+    }
+  };
+
   return (
     <motion.header
       initial={{ y: -100 }}
@@ -39,7 +56,18 @@ export function Navbar() {
       className="fixed top-0 left-0 right-0 z-50 border-b border-border/50 backdrop-blur-xl"
     >
       <nav className="container mx-auto px-4 h-20 flex items-center justify-between">
-        <Link href="/" className="text-2xl font-bold tracking-tight">
+        <Link 
+          href="/" 
+          onClick={(e) => handleScroll(e, '#top')}
+          className="flex items-center gap-2 text-2xl font-bold tracking-tight"
+        >
+          <Image
+            src="/assets/img/logo-1habit.png"
+            alt="1habit Logo"
+            width={32}
+            height={32}
+            className="w-8 h-8"
+          />
           1habit
         </Link>
 
@@ -50,6 +78,7 @@ export function Navbar() {
               <li key={item.href}>
                 <Link
                   href={item.href}
+                  onClick={(e) => handleScroll(e, item.href)}
                   className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
                 >
                   {item.label}
@@ -121,8 +150,8 @@ export function Navbar() {
                   >
                     <Link
                       href={item.href}
+                      onClick={(e) => handleScroll(e, item.href)}
                       className="text-lg font-medium text-muted-foreground hover:text-foreground transition-colors"
-                      onClick={() => setIsOpen(false)}
                     >
                       {item.label}
                     </Link>

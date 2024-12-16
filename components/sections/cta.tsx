@@ -6,7 +6,7 @@ import Link from "next/link";
 
 export function CTA() {
   return (
-    <section className="relative py-32 bg-zinc-950 overflow-hidden">
+    <section id="cta" className="relative py-32 bg-zinc-950 overflow-hidden">
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff08_1px,transparent_1px),linear-gradient(to_bottom,#ffffff08_1px,transparent_1px)] bg-[size:24px_24px]" />
       
       <div className="container relative mx-auto px-4">

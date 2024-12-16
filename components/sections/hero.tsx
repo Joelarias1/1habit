@@ -13,11 +13,11 @@ export function Hero() {
       <div className="absolute inset-0 bg-gradient-to-b from-background/0 via-background/80 to-zinc-950" />
       
       {/* Spline Background */}
-      <div className="absolute -inset-[10%] z-0 opacity-50">
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent z-10" />
+      <div className="absolute -inset-x-[40%] inset-y-0 z-0 opacity-50">
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/30 to-transparent z-10" />
         <Spline
           scene="https://prod.spline.design/DEYoTQIT8vvzeCoV/scene.splinecode"
-          className="w-full h-full scale-125"
+          className="w-full h-full scale-[1.75]"
         />
       </div>
       
