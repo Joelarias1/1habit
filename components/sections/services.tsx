@@ -3,36 +3,80 @@
 import { Calendar, Target, Bell, TrendingUp, Users, Award } from "lucide-react";
 import { motion } from "framer-motion";
 
+const StatusIndicator = ({ status }: { status: "in_development" | "on_roadmap" | "future" }) => {
+  const styles = {
+    in_development: {
+      bg: "bg-emerald-500/10",
+      text: "text-emerald-500",
+      dot: "bg-emerald-400",
+      dotRing: "bg-emerald-500",
+      label: "In development"
+    },
+    on_roadmap: {
+      bg: "bg-orange-500/10",
+      text: "text-orange-500",
+      dot: "bg-orange-400",
+      dotRing: "bg-orange-500",
+      label: "On roadmap"
+    },
+    future: {
+      bg: "bg-zinc-500/10",
+      text: "text-zinc-400",
+      dot: "bg-zinc-400",
+      dotRing: "bg-zinc-500",
+      label: "Future release"
+    }
+  };
+
+  const style = styles[status];
+
+  return (
+    <div className={`flex items-center gap-1.5 px-2 py-1 ${style.bg} rounded-lg w-fit mb-4`}>
+      <span className="relative flex h-1.5 w-1.5">
+        <span className={`animate-ping absolute inline-flex h-full w-full rounded-full ${style.dot} opacity-75`}></span>
+        <span className={`relative inline-flex rounded-full h-1.5 w-1.5 ${style.dotRing}`}></span>
+      </span>
+      <span className={`text-[10px] uppercase tracking-wider ${style.text} font-medium`}>{style.label}</span>
+    </div>
+  );
+};
+
 const features = [
   {
     title: "Habit Tracking",
     description: "Smart tracking system that adapts to your routine, making habit formation effortless.",
     icon: Calendar,
+    status: "in_development" as const
   },
   {
     title: "Goal Setting",
     description: "Powerful goal-setting framework backed by behavioral science.",
     icon: Target,
+    status: "on_roadmap" as const
   },
   {
     title: "Smart Reminders",
     description: "AI-powered notifications that know the perfect time to remind you.",
     icon: Bell,
+    status: "on_roadmap" as const
   },
   {
     title: "Analytics",
     description: "Deep insights into your habits with beautiful, actionable visualizations.",
     icon: TrendingUp,
+    status: "future" as const
   },
   {
     title: "Community",
     description: "Connect with like-minded people who inspire and motivate you.",
     icon: Users,
+    status: "future" as const
   },
   {
     title: "Achievements",
     description: "Gamified system that celebrates your progress and consistency.",
     icon: Award,
+    status: "future" as const
   },
 ];
 
@@ -76,6 +120,7 @@ export function Features() {
               >
                 <div className="absolute inset-0 bg-gradient-to-b from-white/[0.07] to-transparent rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity" />
                 <div className="relative">
+                  {feature.status && <StatusIndicator status={feature.status} />}
                   <div className="flex items-center justify-between mb-4">
                     <div className="p-2 rounded-lg bg-white/[0.05] border border-white/[0.05]">
                       <feature.icon className="w-5 h-5 text-white" />
