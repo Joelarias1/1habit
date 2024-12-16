@@ -6,8 +6,9 @@ import Link from "next/link";
 
 export function CTA() {
   return (
-    <section id="contact" className="relative py-24">
-      <div className="absolute inset-0 bg-gradient-to-t from-background via-muted to-background" />
+    <section className="relative py-32 bg-zinc-950 overflow-hidden">
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff08_1px,transparent_1px),linear-gradient(to_bottom,#ffffff08_1px,transparent_1px)] bg-[size:24px_24px]" />
+      
       <div className="container relative mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -16,22 +17,45 @@ export function CTA() {
           viewport={{ once: true }}
           className="text-center max-w-3xl mx-auto"
         >
-          <div className="relative inline-block mb-6">
-            <div className="absolute inset-0 bg-gradient-conic from-primary via-secondary to-primary blur-2xl opacity-20" />
-            <h2 className="relative text-4xl font-bold">
-              Ready to Build Something Amazing?
-            </h2>
-          </div>
-          <p className="text-xl text-muted-foreground mb-8">
-            Let's transform your vision into reality. Get in touch with us today.
-          </p>
-          <Link
-            href="#contact"
-            className="inline-flex items-center px-8 py-4 text-lg font-medium text-primary-foreground bg-gradient-to-r from-primary to-secondary rounded-full hover:opacity-90 transition-opacity"
+          <motion.div 
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+            viewport={{ once: true }}
+            className="text-white/70 font-mono mb-4"
           >
-            Start Your Project
-            <ArrowRight className="ml-2 h-5 w-5" />
-          </Link>
+            {'// BEGIN YOUR JOURNEY'}
+          </motion.div>
+          
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            viewport={{ once: true }}
+            className="relative"
+          >
+            <h2 className="text-4xl md:text-6xl font-bold text-white mb-6">
+              Complete a 1 min form
+              <br />
+              and begin your journey.
+            </h2>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            viewport={{ once: true }}
+            className="flex justify-center"
+          >
+            <Link
+              href="#features"
+              className="inline-flex items-center px-6 py-3 text-sm font-medium bg-white text-black rounded-lg hover:bg-white/90 transition-colors"
+            >
+              GET STARTED
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Link>
+          </motion.div>
         </motion.div>
       </div>
     </section>

@@ -6,8 +6,8 @@ import { ThemeProvider } from "@/components/theme-provider";
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'FromZero - Innovating from the Ground Up',
-  description: 'We transform ideas into impactful solutions, specializing in MVPs, web design, and cutting-edge Web3 technologies.',
+  title: '1habit - Transform Your Life Through Better Habits',
+  description: 'Build lasting habits that stick with our science-backed approach. Track, analyze, and improve your daily routines effortlessly.',
 };
 
 export default function RootLayout({

@@ -42,32 +42,21 @@ export function Features() {
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff08_1px,transparent_1px),linear-gradient(to_bottom,#ffffff08_1px,transparent_1px)] bg-[size:24px_24px]" />
       
       <div className="container relative mx-auto px-4">
-        <div className="space-y-4 mb-16">
-          <motion.p
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            transition={{ duration: 0.5 }}
-            className="text-white/70 font-mono"
-          >
-            {'// FEATURES'}
-          </motion.p>
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            className="text-4xl md:text-6xl font-bold text-white"
-          >
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          viewport={{ once: true }}
+          className="space-y-4 mb-16"
+        >
+          <p className="text-white/70 font-mono">{'// FEATURES'}</p>
+          <h2 className="text-4xl md:text-6xl font-bold text-white">
             The tools you need to build better habits.
-          </motion.h2>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="text-white/70 text-lg max-w-3xl"
-          >
+          </h2>
+          <p className="text-white/70 text-lg max-w-3xl">
             With years of research in behavioral psychology, we&apos;ve crafted the perfect set of features to help you succeed.
-          </motion.p>
-        </div>
+          </p>
+        </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {features.map((feature, index) => (
@@ -75,7 +64,8 @@ export function Features() {
               key={feature.title}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
+              transition={{ duration: 0.5, delay: 0.3 + (index * 0.1) }}
+              viewport={{ once: true }}
               className="group relative"
             >
               <div className="absolute inset-0 bg-gradient-to-b from-white/[0.07] to-transparent rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity" />
