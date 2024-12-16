@@ -5,17 +5,17 @@ import Link from "next/link";
 import Image from "next/image";
 import { Menu, X } from "lucide-react";
 import { GithubIcon, MessageSquare } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const navItems = [
   { href: "#features", label: "Features" },
   { href: "#mission", label: "Mission" },
-  { href: "#cta", label: "Contact" },
+  { href: "#cta", label: "Join Us" },
 ];
 
 const socialLinks = [
   { 
-    href: "https://github.com/joelarias1", 
+    href: "https://github.com/Joelarias1/1habit", 
     icon: (props: any) => (
       <GithubIcon {...props} fill="currentColor" />
     ), 
@@ -32,12 +32,31 @@ const socialLinks = [
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState('');
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const sections = navItems.map(item => item.href.slice(1));
+      const current = sections.find(section => {
+        const element = document.getElementById(section);
+        if (element) {
+          const rect = element.getBoundingClientRect();
+          return rect.top <= 100 && rect.bottom >= 100;
+        }
+        return false;
+      });
+      setActiveSection(current || '');
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const handleScroll = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
     const target = document.querySelector(href);
     if (target) {
-      const navbarHeight = 80; // altura del navbar
+      const navbarHeight = 80;
       const elementPosition = target.getBoundingClientRect().top;
       const offsetPosition = elementPosition + window.pageYOffset - navbarHeight;
 
@@ -47,6 +66,24 @@ export function Navbar() {
       });
       setIsOpen(false);
     }
+  };
+
+  const getLinkClassName = (href: string) => {
+    const isActive = activeSection === href.slice(1);
+    return `text-sm font-medium transition-colors ${
+      isActive 
+        ? 'text-white' 
+        : 'text-muted-foreground hover:text-foreground'
+    }`;
+  };
+
+  const getMobileLinkClassName = (href: string) => {
+    const isActive = activeSection === href.slice(1);
+    return `text-lg font-medium transition-colors ${
+      isActive 
+        ? 'text-white' 
+        : 'text-muted-foreground hover:text-foreground'
+    }`;
   };
 
   return (
@@ -79,7 +116,7 @@ export function Navbar() {
                 <Link
                   href={item.href}
                   onClick={(e) => handleScroll(e, item.href)}
-                  className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+                  className={getLinkClassName(item.href)}
                 >
                   {item.label}
                 </Link>
@@ -151,7 +188,7 @@ export function Navbar() {
                     <Link
                       href={item.href}
                       onClick={(e) => handleScroll(e, item.href)}
-                      className="text-lg font-medium text-muted-foreground hover:text-foreground transition-colors"
+                      className={getMobileLinkClassName(item.href)}
                     >
                       {item.label}
                     </Link>
