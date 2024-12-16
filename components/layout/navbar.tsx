@@ -6,6 +6,8 @@ import Image from "next/image";
 import { Menu, X } from "lucide-react";
 import { GithubIcon, MessageSquare } from "lucide-react";
 import { useState, useEffect } from "react";
+import { cn } from "@/lib/utils";
+import { usePathname } from "next/navigation";
 
 const navItems = [
   { href: "#features", label: "Features" },
@@ -33,6 +35,7 @@ const socialLinks = [
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('');
+  const pathname = usePathname();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -90,7 +93,11 @@ export function Navbar() {
     <motion.header
       initial={{ y: -100 }}
       animate={{ y: 0 }}
-      className="fixed top-0 left-0 right-0 z-50 border-b border-border/50 backdrop-blur-xl"
+      className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-xl"
+      style={{
+        boxShadow: '0 1px 12px rgba(255, 255, 255, 0.1)',
+        background: 'linear-gradient(180deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.8) 100%)'
+      }}
     >
       <nav className="container mx-auto px-4 h-20 flex items-center justify-between">
         <Link 
@@ -110,37 +117,69 @@ export function Navbar() {
 
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center gap-8">
-          <ul className="flex items-center gap-8">
-            {navItems.map((item) => (
-              <li key={item.href}>
-                <Link
-                  href={item.href}
-                  onClick={(e) => handleScroll(e, item.href)}
-                  className={getLinkClassName(item.href)}
-                >
-                  {item.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
+          <div className="flex items-center gap-4">
+            <Link
+              href="/"
+              className={cn(
+                "text-sm font-medium transition-colors hover:text-primary",
+                pathname === "/" ? "text-white" : "text-muted-foreground"
+              )}
+            >
+              Home
+            </Link>
+            <Link
+              href="#features"
+              className={cn(
+                "text-sm font-medium transition-colors hover:text-primary",
+                pathname === "#features" ? "text-white" : "text-muted-foreground"
+              )}
+            >
+              Features
+            </Link>
+            <Link
+              href="#mission"
+              className={cn(
+                "text-sm font-medium transition-colors hover:text-primary",
+                pathname === "#mission" ? "text-white" : "text-muted-foreground"
+              )}
+            >
+              Mission
+            </Link>
+            <Link
+              href="#join"
+              className={cn(
+                "text-sm font-medium transition-colors hover:text-primary",
+                pathname === "#join" ? "text-white" : "text-muted-foreground"
+              )}
+            >
+              Join Us
+            </Link>
+          </div>
+          <div className="ml-auto flex items-center gap-8">
+            <button
+              className="px-4 py-2 rounded-lg bg-zinc-800 text-white text-sm font-medium transition-all hover:bg-zinc-700 hover:scale-105 active:scale-95 border border-zinc-700 hover:border-zinc-600"
+            >
+              Sign In
+            </button>
 
-          <div className="h-6 w-px bg-border/50" />
+            <div className="h-6 w-px bg-white/20" />
 
-          <ul className="flex items-center gap-3">
-            {socialLinks.map((link) => (
-              <li key={link.label}>
-                <Link
-                  href={link.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-center w-8 h-8 rounded-lg bg-white/60 dark:bg-white/10 text-black/70 dark:text-white/70 hover:bg-white/70 dark:hover:bg-white/20 transition-colors"
-                  aria-label={link.label}
-                >
-                  <link.icon className="h-4 w-4" />
-                </Link>
-              </li>
-            ))}
-          </ul>
+            <ul className="flex items-center gap-4">
+              {socialLinks.map((link) => (
+                <li key={link.label}>
+                  <Link
+                    href={link.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center w-8 h-8 rounded-lg bg-white/60 dark:bg-white/10 text-black/70 dark:text-white/70 hover:bg-white/70 dark:hover:bg-white/20 transition-colors"
+                    aria-label={link.label}
+                  >
+                    <link.icon className="h-4 w-4" />
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
 
         {/* Mobile Menu Button */}
@@ -161,7 +200,11 @@ export function Navbar() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.2 }}
-            className="md:hidden fixed inset-x-0 top-20 bg-background/80 backdrop-blur-xl border-b border-border/50"
+            className="md:hidden fixed inset-x-0 top-20 bg-background/80 backdrop-blur-xl"
+            style={{
+              boxShadow: '0 1px 12px rgba(255, 255, 255, 0.1)',
+              background: 'linear-gradient(180deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.7) 100%)'
+            }}
           >
             <div className="container mx-auto px-4 py-8">
               <motion.ul 
@@ -196,10 +239,10 @@ export function Navbar() {
                 ))}
               </motion.ul>
 
-              <div className="h-px w-full bg-border/50 mb-8" />
+              <div className="h-px w-full bg-white/20 mb-8" />
 
-              <motion.ul 
-                className="flex items-center gap-3"
+              <motion.div
+                className="flex flex-col gap-6"
                 initial="closed"
                 animate="open"
                 variants={{
@@ -211,26 +254,42 @@ export function Navbar() {
                   }
                 }}
               >
-                {socialLinks.map((link) => (
-                  <motion.li 
-                    key={link.label}
-                    variants={{
-                      open: { opacity: 1, scale: 1 },
-                      closed: { opacity: 0, scale: 0.3 }
-                    }}
-                  >
-                    <Link
-                      href={link.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center justify-center w-8 h-8 rounded-lg bg-white/60 dark:bg-white/10 text-black/70 dark:text-white/70 hover:bg-white/70 dark:hover:bg-white/20 transition-colors"
-                      aria-label={link.label}
+                <motion.div
+                  variants={{
+                    open: { opacity: 1, y: 0 },
+                    closed: { opacity: 0, y: 20 }
+                  }}
+                >
+                  <button className="w-full px-4 py-3 rounded-lg bg-zinc-800 text-white text-sm font-medium transition-all hover:bg-zinc-700 active:scale-95 border border-zinc-700 hover:border-zinc-600">
+                    Sign In
+                  </button>
+                </motion.div>
+
+                <div className="h-px w-full bg-border/50" />
+
+                <motion.div className="flex justify-center gap-4">
+                  {socialLinks.map((link) => (
+                    <motion.div 
+                      key={link.label}
+                      variants={{
+                        open: { opacity: 1, y: 0 },
+                        closed: { opacity: 0, y: 20 }
+                      }}
+                      className="flex-1 max-w-[160px]"
                     >
-                      <link.icon className="h-4 w-4" />
-                    </Link>
-                  </motion.li>
-                ))}
-              </motion.ul>
+                      <Link
+                        href={link.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-white/10 text-white/70 hover:bg-white/20 transition-all"
+                      >
+                        <link.icon className="h-4 w-4" />
+                        <span className="text-sm font-medium">{link.label}</span>
+                      </Link>
+                    </motion.div>
+                  ))}
+                </motion.div>
+              </motion.div>
             </div>
           </motion.div>
         )}

@@ -43,43 +43,51 @@ export function Features() {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,#09090b_100%)] z-10" />
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff0f_1px,transparent_1px),linear-gradient(to_bottom,#ffffff0f_1px,transparent_1px)] bg-[size:24px_24px]" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,#ffffff15_0%,transparent_60%)]" />
+        <div className="absolute top-0 inset-x-0 h-24 bg-gradient-to-b from-zinc-950 via-zinc-950/50 to-transparent z-20" />
       </div>
       
       <div className="container relative mx-auto px-4 z-20">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          viewport={{ once: true }}
-          className="space-y-4 mb-16"
-        >
-          <p className="text-white/70 font-mono">{'// FEATURES'}</p>
-          <h2 className="text-4xl md:text-6xl font-bold text-white">
-            The tools you need to build better habits.
-          </h2>
-          <p className="text-white/70 text-lg max-w-3xl">
-            With years of research in behavioral psychology, we&apos;ve crafted the perfect set of features to help you succeed.
-          </p>
-        </motion.div>
+        <div className="max-w-7xl mx-auto px-4 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            viewport={{ once: true }}
+            className="space-y-4 mb-16 max-w-3xl"
+          >
+            <p className="text-white/70 font-mono">{'// FEATURES'}</p>
+            <h2 className="text-4xl md:text-6xl font-bold text-white">
+              The tools you need to build better habits.
+            </h2>
+            <p className="text-white/70 text-lg">
+              With years of research in behavioral psychology, we&apos;ve crafted the perfect set of features to help you succeed.
+            </p>
+          </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {features.map((feature, index) => (
-            <motion.div
-              key={feature.title}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.3 + (index * 0.1) }}
-              viewport={{ once: true }}
-              className="group relative"
-            >
-              <div className="absolute inset-0 bg-gradient-to-b from-white/[0.07] to-transparent rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity" />
-              <div className="relative p-8 rounded-3xl bg-white/[0.03] hover:bg-white/[0.05] border border-white/10 h-full backdrop-blur-sm transition-colors">
-                <feature.icon className="h-8 w-8 mb-4 text-white/80" />
-                <h3 className="text-xl font-semibold mb-2 text-white">{feature.title}</h3>
-                <p className="text-white/70">{feature.description}</p>
-              </div>
-            </motion.div>
-          ))}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {features.map((feature, index) => (
+              <motion.div
+                key={feature.title}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.3 + (index * 0.1) }}
+                viewport={{ once: true }}
+                className="relative group rounded-xl border border-primary/10 bg-primary/5 p-6 backdrop-blur-sm"
+              >
+                <div className="absolute inset-0 bg-gradient-to-b from-white/[0.07] to-transparent rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity" />
+                <div className="relative">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="p-2 rounded-lg bg-white/[0.05] border border-white/[0.05]">
+                      <feature.icon className="w-5 h-5 text-white" />
+                    </div>
+                    <span className="text-white/30 text-sm">0{index + 1}</span>
+                  </div>
+                  <h3 className="text-lg font-semibold text-white mb-2">{feature.title}</h3>
+                  <p className="text-white/70">{feature.description}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </div>
     </section>
