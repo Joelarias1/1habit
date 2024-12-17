@@ -85,7 +85,13 @@ export function Features() {
     <section id="features" className="relative py-32 bg-zinc-950 overflow-hidden">
       <div className="absolute inset-0">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,#09090b_100%)] z-10" />
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff0f_1px,transparent_1px),linear-gradient(to_bottom,#ffffff0f_1px,transparent_1px)] bg-[size:24px_24px]" />
+        <div 
+          className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff0f_1px,transparent_1px),linear-gradient(to_bottom,#ffffff0f_1px,transparent_1px)] bg-[size:24px_24px]"
+          style={{
+            maskImage: 'linear-gradient(to bottom, transparent, transparent 10%, rgba(9,9,11,0.5) 25%, black 50%)',
+            WebkitMaskImage: 'linear-gradient(to bottom, transparent, transparent 10%, rgba(9,9,11,0.5) 25%, black 50%)'
+          }}
+        />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,#ffffff15_0%,transparent_60%)]" />
         <div className="absolute top-0 inset-x-0 h-24 bg-gradient-to-b from-zinc-950 via-zinc-950/50 to-transparent z-20" />
       </div>
