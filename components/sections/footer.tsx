@@ -57,19 +57,21 @@ export function Footer() {
                 href="https://github.com/1habit"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-center w-8 h-8 rounded-lg bg-white/10 text-white/70 hover:bg-white/20 transition-colors"
+                className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-zinc-800 text-white/70 hover:bg-zinc-700 hover:text-white transition-all border border-zinc-700 hover:border-zinc-600"
                 aria-label="GitHub"
               >
                 <GithubIcon className="h-4 w-4" />
+                <span className="text-sm font-medium">GitHub</span>
               </Link>
               <Link
                 href="mailto:contact@1habit.app"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-center w-8 h-8 rounded-lg bg-white/10 text-white/70 hover:bg-white/20 transition-colors"
-                aria-label="Email"
+                className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-zinc-800 text-white/70 hover:bg-zinc-700 hover:text-white transition-all border border-zinc-700 hover:border-zinc-600"
+                aria-label="Contact"
               >
                 <MessageSquare className="h-4 w-4" />
+                <span className="text-sm font-medium">Contact</span>
               </Link>
             </div>
           </div>

@@ -27,17 +27,19 @@ const steps = [
 
 export function Mission() {
   return (
-    <section id="mission" className="relative py-32 -mt-32 bg-zinc-950 overflow-hidden">
+    <section id="mission" className="relative py-32 bg-zinc-950 overflow-hidden">
       <div className="absolute inset-0">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,#09090b_100%)] z-10" />
         <div 
-          className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff0f_1px,transparent_1px),linear-gradient(to_bottom,#ffffff0f_1px,transparent_1px)] bg-[size:24px_24px]"
+          className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff0f_1px,transparent_1px),linear-gradient(to_bottom,#ffffff0f_1px,transparent_1px)] bg-[size:24px_24px] w-full h-full"
           style={{
-            maskImage: 'linear-gradient(to bottom, transparent, transparent 10%, rgba(9,9,11,0.5) 25%, black 40%, black 100%)',
-            WebkitMaskImage: 'linear-gradient(to bottom, transparent, transparent 10%, rgba(9,9,11,0.5) 25%, black 40%, black 100%)'
+            maskImage: 'linear-gradient(to bottom, transparent, transparent 5%, rgba(9,9,11,0.5) 20%, black 30%, black 70%, rgba(9,9,11,0.5) 80%, transparent 95%, transparent)',
+            WebkitMaskImage: 'linear-gradient(to bottom, transparent, transparent 5%, rgba(9,9,11,0.5) 20%, black 30%, black 70%, rgba(9,9,11,0.5) 80%, transparent 95%, transparent)'
           }}
         />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,#ffffff15_0%,transparent_60%)]" />
+        <div className="absolute top-0 inset-x-0 h-24 bg-gradient-to-b from-zinc-950 via-zinc-950/50 to-transparent z-20" />
+        <div className="absolute bottom-0 inset-x-0 h-24 bg-gradient-to-t from-zinc-950 via-zinc-950/50 to-transparent z-20" />
       </div>
       
       <div className="container relative mx-auto px-4 z-20">
@@ -50,10 +52,10 @@ export function Mission() {
             className="mb-12"
           >
             <div className="text-white/70 font-mono mb-4">
-              {'// ONE HABIT ONCE®'}
+              {'// BUILD YOUR HABITS'}
             </div>
             <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-white">
-              Unique. Strategic. Timeless.
+              Simple. Consistent. Powerful.
             </h2>
           </motion.div>
 

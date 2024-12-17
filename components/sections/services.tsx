@@ -32,9 +32,10 @@ const StatusIndicator = ({ status }: { status: "in_development" | "on_roadmap" |
 
   return (
     <div className={`flex items-center gap-1.5 px-2 py-1 ${style.bg} rounded-lg w-fit mb-4`}>
-      <span className="relative flex h-1.5 w-1.5">
-        <span className={`animate-ping absolute inline-flex h-full w-full rounded-full ${style.dot} opacity-75`}></span>
-        <span className={`relative inline-flex rounded-full h-1.5 w-1.5 ${style.dotRing}`}></span>
+      <span className="relative flex h-2 w-2">
+        <span className={`absolute inline-flex h-full w-full rounded-full ${style.dot} blur-[2px] animate-glow-soft`}></span>
+        <span className={`absolute inline-flex h-full w-full rounded-full ${style.dot} blur-[4px] animate-glow-soft scale-150 opacity-50`}></span>
+        <span className={`relative inline-flex rounded-full h-2 w-2 ${style.dotRing} shadow-lg`}></span>
       </span>
       <span className={`text-[10px] uppercase tracking-wider ${style.text} font-medium`}>{style.label}</span>
     </div>
@@ -49,6 +50,12 @@ const features = [
     status: "in_development" as const
   },
   {
+    title: "Analytics",
+    description: "Deep insights into your habits with beautiful, actionable visualizations.",
+    icon: TrendingUp,
+    status: "in_development" as const
+  },
+  {
     title: "Goal Setting",
     description: "Powerful goal-setting framework backed by behavioral science.",
     icon: Target,
@@ -58,12 +65,6 @@ const features = [
     title: "Smart Reminders",
     description: "AI-powered notifications that know the perfect time to remind you.",
     icon: Bell,
-    status: "on_roadmap" as const
-  },
-  {
-    title: "Analytics",
-    description: "Deep insights into your habits with beautiful, actionable visualizations.",
-    icon: TrendingUp,
     status: "future" as const
   },
   {
@@ -86,14 +87,15 @@ export function Features() {
       <div className="absolute inset-0">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,#09090b_100%)] z-10" />
         <div 
-          className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff0f_1px,transparent_1px),linear-gradient(to_bottom,#ffffff0f_1px,transparent_1px)] bg-[size:24px_24px]"
+          className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff0f_1px,transparent_1px),linear-gradient(to_bottom,#ffffff0f_1px,transparent_1px)] bg-[size:24px_24px] w-full h-full"
           style={{
-            maskImage: 'linear-gradient(to bottom, transparent, transparent 10%, rgba(9,9,11,0.5) 25%, black 50%)',
-            WebkitMaskImage: 'linear-gradient(to bottom, transparent, transparent 10%, rgba(9,9,11,0.5) 25%, black 50%)'
+            maskImage: 'linear-gradient(to bottom, transparent, transparent 5%, rgba(9,9,11,0.5) 20%, black 30%, black 70%, rgba(9,9,11,0.5) 80%, transparent 95%, transparent)',
+            WebkitMaskImage: 'linear-gradient(to bottom, transparent, transparent 5%, rgba(9,9,11,0.5) 20%, black 30%, black 70%, rgba(9,9,11,0.5) 80%, transparent 95%, transparent)'
           }}
         />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,#ffffff15_0%,transparent_60%)]" />
         <div className="absolute top-0 inset-x-0 h-24 bg-gradient-to-b from-zinc-950 via-zinc-950/50 to-transparent z-20" />
+        <div className="absolute bottom-0 inset-x-0 h-24 bg-gradient-to-t from-zinc-950 via-zinc-950/50 to-transparent z-20" />
       </div>
       
       <div className="container relative mx-auto px-4 z-20">
