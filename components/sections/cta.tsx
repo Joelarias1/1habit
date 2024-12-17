@@ -6,15 +6,16 @@ import Link from "next/link";
 
 export function CTA() {
   return (
-    <section id="cta" className="relative py-32 pb-0 bg-zinc-950 overflow-hidden">
+    <section id="cta" className="relative pt-32 bg-zinc-950 overflow-hidden">
       {/* Rejilla con gradiente radial */}
       <div className="absolute inset-0">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,#09090b_100%)] z-10" />
         <div 
           className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff0f_1px,transparent_1px),linear-gradient(to_bottom,#ffffff0f_1px,transparent_1px)] bg-[size:24px_24px]"
           style={{
-            maskImage: 'linear-gradient(to bottom, transparent, transparent 10%, rgba(9,9,11,0.5) 25%, black 50%)',
-            WebkitMaskImage: 'linear-gradient(to bottom, transparent, transparent 10%, rgba(9,9,11,0.5) 25%, black 50%)'
+            maskImage: 'linear-gradient(to bottom, black, black)',
+            WebkitMaskImage: 'linear-gradient(to bottom, black, black)',
+            background: 'linear-gradient(to bottom, rgba(255,255,255,0.02), rgba(255,255,255,0.02)) padding-box, linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px) 0 0 / 24px 24px, linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px) 0 0 / 24px 24px'
           }}
         />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,#ffffff15_0%,transparent_60%)]" />

@@ -27,10 +27,16 @@ const steps = [
 
 export function Mission() {
   return (
-    <section id="mission" className="relative py-24 bg-zinc-950 overflow-hidden">
+    <section id="mission" className="relative py-32 -mt-32 bg-zinc-950 overflow-hidden">
       <div className="absolute inset-0">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,#09090b_100%)] z-10" />
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff0f_1px,transparent_1px),linear-gradient(to_bottom,#ffffff0f_1px,transparent_1px)] bg-[size:24px_24px]" />
+        <div 
+          className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff0f_1px,transparent_1px),linear-gradient(to_bottom,#ffffff0f_1px,transparent_1px)] bg-[size:24px_24px]"
+          style={{
+            maskImage: 'linear-gradient(to bottom, transparent, transparent 10%, rgba(9,9,11,0.5) 25%, black 40%, black 100%)',
+            WebkitMaskImage: 'linear-gradient(to bottom, transparent, transparent 10%, rgba(9,9,11,0.5) 25%, black 40%, black 100%)'
+          }}
+        />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,#ffffff15_0%,transparent_60%)]" />
       </div>
       

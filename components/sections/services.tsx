@@ -122,9 +122,9 @@ export function Features() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.3 + (index * 0.1) }}
                 viewport={{ once: true }}
-                className="relative group rounded-xl border border-primary/10 bg-primary/5 p-6 backdrop-blur-sm"
+                className="relative group rounded-xl border border-primary/10 bg-primary/5 p-6 backdrop-blur-sm overflow-hidden"
               >
-                <div className="absolute inset-0 bg-gradient-to-b from-white/[0.07] to-transparent rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity" />
+                <div className="absolute inset-0 bg-gradient-to-b from-white/[0.07] to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                 <div className="relative">
                   {feature.status && <StatusIndicator status={feature.status} />}
                   <div className="flex items-center justify-between mb-4">
