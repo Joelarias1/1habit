@@ -7,26 +7,23 @@ const footerLinks = {
     title: 'Product',
     links: [
       { name: 'Features', href: '#features' },
-      { name: 'Dashboard', href: '#dashboard' },
-      { name: 'Pricing', href: '#pricing' },
       { name: 'Mission', href: '#mission' },
+      { name: 'Join Us', href: '#join' },
     ],
   },
   resources: {
     title: 'Resources',
     links: [
-      { name: 'Documentation', href: '/docs' },
-      { name: 'Help center', href: '/help' },
-      { name: 'Blog', href: '/blog' },
-      { name: 'Changelog', href: '/changelog' },
+      { name: 'GitHub', href: 'https://github.com/Joelarias1/1habit' },
+      { name: 'Contact', href: 'mailto:contact@1habit.app' },
     ],
   },
   company: {
     title: 'Company',
     links: [
-      { name: 'About', href: '/about' },
+      { name: 'About', href: '#mission' },
       { name: 'Contact', href: 'mailto:contact@1habit.app' },
-      { name: 'GitHub', href: 'https://github.com/1habit' },
+      { name: 'GitHub', href: 'https://github.com/Joelarias1/1habit' },
       { name: 'Terms & Privacy', href: '/terms' },
     ],
   },
@@ -54,7 +51,7 @@ export function Footer() {
             </p>
             <div className="mt-6 flex items-center gap-3">
               <Link
-                href="https://github.com/1habit"
+                href="https://github.com/Joelarias1/1habit"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-zinc-800 text-white/70 hover:bg-zinc-700 hover:text-white transition-all border border-zinc-700 hover:border-zinc-600"
