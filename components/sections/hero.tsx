@@ -3,13 +3,11 @@
 import { ArrowRight, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { Starfield } from "../ui/starfield";
 import Spline from '@splinetool/react-spline';
 
 export function Hero() {
   return (
     <section className="relative min-h-screen flex items-center justify-center pt-32 overflow-hidden">
-      <Starfield />
       <div className="absolute inset-0 bg-gradient-to-b from-background/0 via-background/80 to-zinc-950" />
       
       {/* Spline Background */}
