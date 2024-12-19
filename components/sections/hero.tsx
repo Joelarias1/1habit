@@ -1,23 +1,36 @@
 "use client";
 
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import Spline from '@splinetool/react-spline';
+import { useState } from "react";
 
 export function Hero() {
+  const [isSplineLoaded, setIsSplineLoaded] = useState(false);
+
+  function onSplineLoad() {
+    setIsSplineLoaded(true);
+  }
+
   return (
     <section className="relative min-h-screen flex items-center justify-center pt-32 overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-b from-background/0 via-background/80 to-zinc-950" />
       
       {/* Spline Background */}
-      <div className="absolute -inset-x-[40%] inset-y-0 z-0 opacity-75">
+      <motion.div 
+        className="absolute -inset-x-[40%] inset-y-0 z-0"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: isSplineLoaded ? 0.75 : 0 }}
+        transition={{ duration: 1 }}
+      >
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/30 to-transparent z-10" />
         <Spline
           scene="https://prod.spline.design/DEYoTQIT8vvzeCoV/scene.splinecode"
           className="w-full h-full scale-[1.4]"
+          onLoad={onSplineLoad}
         />
-      </div>
+      </motion.div>
       
       <div className="container relative mx-auto px-4 z-10">
         <motion.div
