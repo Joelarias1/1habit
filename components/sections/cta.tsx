@@ -60,7 +60,7 @@ export function CTA() {
             className="flex justify-center"
           >
             <Link
-              href="#features"
+              href="/register"
               className="inline-flex items-center px-8 py-4 text-base font-medium bg-white text-black rounded-lg hover:bg-white/90 transition-colors shadow-lg"
             >
               GET STARTED

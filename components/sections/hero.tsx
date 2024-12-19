@@ -15,7 +15,7 @@ export function Hero() {
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/30 to-transparent z-10" />
         <Spline
           scene="https://prod.spline.design/DEYoTQIT8vvzeCoV/scene.splinecode"
-          className="w-full h-full scale-[1.75]"
+          className="w-full h-full scale-[1.4]"
         />
       </div>
       
@@ -71,7 +71,7 @@ export function Hero() {
               className="flex items-center justify-center gap-4"
             >
               <Link
-                href="#features"
+                href="/register"
                 className="inline-flex items-center px-6 py-3 text-sm font-medium text-primary-foreground bg-primary rounded-lg hover:opacity-90 transition-opacity"
               >
                 Start Your Journey
