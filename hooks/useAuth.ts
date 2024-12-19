@@ -22,7 +22,15 @@ export function useAuth() {
       router.push('/dashboard')
       router.refresh()
     } catch (error) {
-      setError(error instanceof Error ? error.message : 'An error occurred')
+      if (error instanceof Error) {
+        if (error.message.includes('Invalid login credentials')) {
+          setError('Invalid email or password')
+        } else if (error.message.includes('Email not confirmed')) {
+          setError('Please verify your email before signing in')
+        } else {
+          setError('An error occurred during sign in')
+        }
+      }
     } finally {
       setIsLoading(false)
     }
@@ -36,17 +44,19 @@ export function useAuth() {
       const { error } = await supabase.auth.signUp({
         email,
         password,
-        options: {
-          emailRedirectTo: `${window.location.origin}/auth/callback`,
-        },
       })
 
       if (error) throw error
 
-      // Mostrar mensaje de verificación de email
       router.push('/verify-email')
     } catch (error) {
-      setError(error instanceof Error ? error.message : 'An error occurred')
+      if (error instanceof Error) {
+        if (error.message.includes('User already registered')) {
+          setError('An account with this email already exists')
+        } else {
+          setError('An error occurred during sign up')
+        }
+      }
     } finally {
       setIsLoading(false)
     }
@@ -63,27 +73,7 @@ export function useAuth() {
       router.push('/')
       router.refresh()
     } catch (error) {
-      setError(error instanceof Error ? error.message : 'An error occurred')
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  const resetPassword = async (email: string) => {
-    try {
-      setIsLoading(true)
-      setError(null)
-
-      const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/auth/callback`,
-      })
-
-      if (error) throw error
-
-      return true
-    } catch (error) {
-      setError(error instanceof Error ? error.message : 'An error occurred')
-      return false
+      setError('An error occurred during sign out')
     } finally {
       setIsLoading(false)
     }
@@ -93,7 +83,6 @@ export function useAuth() {
     signIn,
     signUp,
     signOut,
-    resetPassword,
     isLoading,
     error,
   }

@@ -6,14 +6,26 @@ import { QuoteDisplay } from "@/components/auth/QuoteDisplay"
 import Link from "next/link"
 import Image from "next/image"
 import { motion } from "framer-motion"
+import { useSearchParams } from 'next/navigation'
+import { useEffect, useState } from 'react'
 
 export default function LoginPage() {
+  const searchParams = useSearchParams()
+  const [authError, setAuthError] = useState<string | null>(null)
+
+  useEffect(() => {
+    const error = searchParams.get('error')
+    if (error === 'auth') {
+      setAuthError('Authentication failed. Please try again.')
+    }
+  }, [searchParams])
+
   return (
     <div className="h-screen overflow-hidden">
       <div className="grid lg:grid-cols-2 h-full">
         <QuoteDisplay />
 
-        {/* Sección derecha - Formulario */}
+        {/* Right section - Form */}
         <motion.div 
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
@@ -26,7 +38,7 @@ export default function LoginPage() {
             transition={{ delay: 0.3, duration: 0.6 }}
             className="w-full max-w-[350px] space-y-6"
           >
-            {/* Logo móvil */}
+            {/* Mobile logo */}
             <motion.div 
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -58,6 +70,16 @@ export default function LoginPage() {
                 Enter your email to sign in to your account
               </p>
             </motion.div>
+
+            {authError && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="p-3 rounded-md bg-red-50 border border-red-200"
+              >
+                <p className="text-sm text-red-600">{authError}</p>
+              </motion.div>
+            )}
 
             <motion.div
               initial={{ opacity: 0, y: 20 }}

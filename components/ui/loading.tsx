@@ -1,38 +1,32 @@
-"use client";
+'use client'
 
-import Image from 'next/image';
-import { motion } from 'framer-motion';
-import { useEffect, useState } from 'react';
+import Image from 'next/image'
+import { motion } from 'framer-motion'
+import { useEffect, useState } from 'react'
 
-export default function Loading() {
-  const [showLoading, setShowLoading] = useState(true);
+interface LoadingProps {
+  onLoadingComplete?: () => void;
+}
+
+export function Loading({ onLoadingComplete }: LoadingProps) {
+  const [show, setShow] = useState(false)
 
   useEffect(() => {
-    // Verificar si es la primera carga
-    const hasLoaded = localStorage.getItem('hasLoadedBefore');
-    
-    if (!hasLoaded) {
-      // Si es la primera carga, establecer el flag
-      localStorage.setItem('hasLoadedBefore', 'true');
-      // Mostrar loading por 2 segundos
-      const timer = setTimeout(() => {
-        setShowLoading(false);
-      }, 2000);
-      return () => clearTimeout(timer);
-    } else {
-      // Si ya ha cargado antes, no mostrar loading
-      setShowLoading(false);
-    }
-  }, []);
+    const timer = setTimeout(() => {
+      setShow(true)
+    }, 1000)
 
-  if (!showLoading) return null;
+    return () => clearTimeout(timer)
+  }, [])
+
+  if (!show) return null
 
   return (
     <div className="fixed inset-0 bg-zinc-950 flex items-center justify-center z-50">
       <motion.div 
         initial={{ opacity: 0, scale: 0.5 }}
         animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.5 }}
+        transition={{ duration: 0.8 }}
         className="relative flex flex-col items-center"
       >
         <div className="relative w-16 h-16">
@@ -63,21 +57,22 @@ export default function Loading() {
             initial={{ x: "-100%" }}
             animate={{ x: "100%" }}
             transition={{ 
-              repeat: Infinity,
-              duration: 1,
+              repeat: 0,
+              duration: 2,
               ease: "easeInOut"
             }}
+            onAnimationComplete={onLoadingComplete}
           />
         </div>
         <motion.span 
           className="mt-4 text-sm text-white/60 font-mono"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 0.5 }}
+          transition={{ delay: 0.8 }}
         >
           loading...
         </motion.span>
       </motion.div>
     </div>
-  );
+  )
 } 
