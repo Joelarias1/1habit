@@ -3,8 +3,33 @@
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import Image from 'next/image'
+import { useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+import { useAuth } from '@/hooks/useAuth'
 
 export default function NotFound() {
+  const router = useRouter()
+  const { user } = useAuth()
+
+  useEffect(() => {
+    if (user) {
+      router.push('/dashboard')
+    }
+  }, [user, router])
+
+  const handleNavigation = (e: React.MouseEvent) => {
+    e.preventDefault()
+    if (user) {
+      router.push('/dashboard')
+    } else {
+      router.push('/')
+    }
+  }
+
+  if (user) {
+    return null // Prevents flash while redirecting
+  }
+
   return (
     <div className="min-h-screen bg-zinc-950 flex items-center justify-center p-4">
       <div className="max-w-md w-full">
@@ -42,12 +67,12 @@ export default function NotFound() {
 
           {/* Navigation Links */}
           <div className="space-y-4">
-            <Link 
-              href="/"
+            <button 
+              onClick={handleNavigation}
               className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 w-full"
             >
-              Go back home
-            </Link>
+              {user ? 'Return to Dashboard' : 'Go back home'}
+            </button>
             <p className="text-sm text-zinc-500">
               Need help?{" "}
               <Link href="/contact" className="text-primary hover:underline">

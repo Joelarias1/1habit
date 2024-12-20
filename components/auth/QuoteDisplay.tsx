@@ -127,13 +127,15 @@ export function QuoteDisplay() {
             transition={{ delay: 0.7, duration: 0.6 }}
             className="relative space-y-6"
           >
-            <p className="text-3xl md:text-4xl font-light leading-relaxed text-white italic text-center">
+            <p className="text-4xl md:text-5xl font-light leading-relaxed text-white font-['Playfair_Display'] text-center tracking-normal">
               &ldquo;{quote.text}&rdquo;
             </p>
-            <footer className="text-center">
-              <span className="text-lg text-white/70 font-serif italic">
-                — {quote.author}
+            <footer className="text-center mt-8 flex flex-col items-center">
+              <div className="w-16 h-[1px] bg-white/20 mb-4"></div>
+              <span className="text-lg text-white/90 font-['Cormorant_Garamond'] tracking-wide">
+                {quote.author}
               </span>
+              <div className="w-16 h-[1px] bg-white/20 mt-4"></div>
             </footer>
           </motion.blockquote>
         </div>

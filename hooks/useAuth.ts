@@ -1,12 +1,45 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/utils/supabaseClient'
+import { User } from '@supabase/supabase-js'
 
+/**
+ * Hook for managing authentication state and operations
+ * @returns {Object} Authentication methods and state
+ * 
+ * @property {User | null} user - Current authenticated user or null
+ * @property {(email: string, password: string) => Promise<void>} signIn - Email/password sign in
+ * @property {(email: string, password: string) => Promise<void>} signUp - New user registration
+ * @property {() => Promise<void>} signOut - Sign out current user
+ * @property {boolean} isLoading - Loading state for auth operations
+ * @property {string | null} error - Error message if auth operation fails
+ * 
+ * @example
+ * const { user, signIn, error } = useAuth();
+ * // Sign in user
+ * await signIn('user@example.com', 'password');
+ */
 export function useAuth() {
   const router = useRouter()
+  const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
+  // Listen for authentication state changes
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_, session) => {
+      setUser(session?.user ?? null)
+    })
+
+    // Get initial session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null)
+    })
+
+    return () => subscription.unsubscribe()
+  }, [])
+
+  // Sign in with email and password
   const signIn = async (email: string, password: string) => {
     try {
       setIsLoading(true)
@@ -36,6 +69,7 @@ export function useAuth() {
     }
   }
 
+  // Register new user
   const signUp = async (email: string, password: string) => {
     try {
       setIsLoading(true)
@@ -62,6 +96,7 @@ export function useAuth() {
     }
   }
 
+  // Sign out current user
   const signOut = async () => {
     try {
       setIsLoading(true)
@@ -80,6 +115,7 @@ export function useAuth() {
   }
 
   return {
+    user,
     signIn,
     signUp,
     signOut,
