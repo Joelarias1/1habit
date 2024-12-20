@@ -1,6 +1,6 @@
 'use client'
 
-import { useId } from 'react'
+import { useId, useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 
 interface GridPatternProps {
@@ -20,8 +20,24 @@ export function GridPattern({
   className = '',
 }: GridPatternProps) {
   const id = useId()
-  const columns = Math.ceil((typeof window !== 'undefined' ? window.innerWidth : 1920) / width) + 1
-  const rows = Math.ceil((typeof window !== 'undefined' ? window.innerHeight : 1080) / height) + 1
+  const [mounted, setMounted] = useState(false)
+  const [dimensions, setDimensions] = useState({
+    width: 1920,
+    height: 1080
+  })
+
+  useEffect(() => {
+    setMounted(true)
+    setDimensions({
+      width: window.innerWidth,
+      height: window.innerHeight
+    })
+  }, [])
+
+  if (!mounted) return null
+
+  const columns = Math.ceil(dimensions.width / width) + 1
+  const rows = Math.ceil(dimensions.height / height) + 1
   const squares = Array.from({ length: columns * rows }, (_, i) => i)
 
   return (

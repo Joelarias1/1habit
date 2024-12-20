@@ -3,11 +3,13 @@ import { GridPattern } from '@/components/ui/grid-pattern'
 
 export default function OnboardingPage() {
   return (
-    <main className="min-h-screen flex items-center justify-center">
-      <div className="fixed inset-0">
+    <div className="relative min-h-screen flex items-center justify-center">
+      <div className="fixed inset-0 -z-10">
         <GridPattern className="opacity-50" />
       </div>
-      <OnboardingForm />
-    </main>
+      <div className="container max-w-md mx-auto px-4">
+        <OnboardingForm />
+      </div>
+    </div>
   )
 } 
