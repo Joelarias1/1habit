@@ -9,6 +9,7 @@ import { motion } from "framer-motion"
 import { useSearchParams, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { useProfile } from '@/hooks/useProfile'
+import { GridPattern } from '@/components/ui/grid-pattern'
 
 export default function LoginPage() {
   const searchParams = useSearchParams()
@@ -46,22 +47,32 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="h-screen overflow-hidden bg-zinc-950">
+    <div className="h-screen overflow-hidden">
       <div className="grid lg:grid-cols-2 h-full">
-        <QuoteDisplay />
+        {/* Left section - Quote (se oculta en mobile/tablet) */}
+        <div className="hidden lg:block">
+          <QuoteDisplay />
+        </div>
 
         {/* Right section - Form */}
         <motion.div 
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6 }}
-          className="flex items-center justify-center p-8 h-full overflow-y-auto"
+          className="relative flex items-center justify-center p-8 h-full overflow-y-auto lg:bg-transparent w-full col-span-2 lg:col-span-1"
         >
+          {/* Background Pattern - Solo para mobile/tablet */}
+          <div className="absolute inset-0 -z-10 block lg:hidden">
+            <GridPattern 
+              className="opacity-30" 
+            />
+          </div>
+
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3, duration: 0.6 }}
-            className="w-full max-w-[350px] space-y-6"
+            className="w-full max-w-[350px] space-y-6 relative z-10"
           >
             {/* Mobile logo */}
             <motion.div 

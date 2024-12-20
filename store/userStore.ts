@@ -61,14 +61,11 @@ export const useUserStore = create<UserState>()(
         const { user } = get()
         
         if (!user) {
-          console.log('No user found')
-          return { success: false }
+          console.log('No active session')
+          return { success: false, error: 'No active session' }
         }
 
         try {
-          console.log('Updating profile with:', updates)
-          console.log('For user:', user.id)
-
           const { data, error } = await supabase
             .from('profiles')
             .update({
@@ -78,15 +75,15 @@ export const useUserStore = create<UserState>()(
             .eq('id', user.id)
             .select()
 
-          if (error) {
-            console.error('Supabase error:', error)
-            throw error
+          if (error) throw error
+
+          // Refetch solo si hay sesión activa
+          try {
+            await get().fetchProfile()
+          } catch (e) {
+            // Ignorar errores de fetchProfile durante el logout
+            console.log('Session ended, skipping profile fetch')
           }
-
-          console.log('Update response:', data)
-
-          // Refetch profile inmediatamente
-          await get().fetchProfile()
           
           return { success: true }
         } catch (error) {
