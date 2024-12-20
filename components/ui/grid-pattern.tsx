@@ -6,39 +6,36 @@ import { motion, AnimatePresence } from 'framer-motion'
 interface GridPatternProps {
   width?: number
   height?: number
-  x?: number
-  y?: number
-  squares?: number[]
   className?: string
 }
 
 export function GridPattern({
   width = 50,
   height = 50,
-  x = -1,
-  y = -1,
   className = '',
 }: GridPatternProps) {
   const id = useId()
   const [mounted, setMounted] = useState(false)
-  const [dimensions, setDimensions] = useState({
-    width: 1920,
-    height: 1080
-  })
+  const [squares, setSquares] = useState<number[]>([])
 
   useEffect(() => {
     setMounted(true)
-    setDimensions({
-      width: window.innerWidth,
-      height: window.innerHeight
-    })
-  }, [])
+    const calculateGrid = () => {
+      const columns = Math.ceil(window.innerWidth / width) + 1
+      const rows = Math.ceil(window.innerHeight / height) + 1
+      return Array.from({ length: columns * rows }, (_, i) => i)
+    }
+    setSquares(calculateGrid())
+
+    const handleResize = () => {
+      setSquares(calculateGrid())
+    }
+
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [width, height])
 
   if (!mounted) return null
-
-  const columns = Math.ceil(dimensions.width / width) + 1
-  const rows = Math.ceil(dimensions.height / height) + 1
-  const squares = Array.from({ length: columns * rows }, (_, i) => i)
 
   return (
     <svg
@@ -51,8 +48,6 @@ export function GridPattern({
           width={width}
           height={height}
           patternUnits="userSpaceOnUse"
-          x={x}
-          y={y}
         >
           <path d={`M.5 ${height}V.5H${width}`} fill="none" />
         </pattern>
@@ -65,8 +60,8 @@ export function GridPattern({
       />
       <AnimatePresence>
         {squares.map((square) => {
-          const col = square % columns
-          const row = Math.floor(square / columns)
+          const col = square % Math.ceil(window.innerWidth / width)
+          const row = Math.floor(square / Math.ceil(window.innerWidth / width))
           const x = col * width
           const y = row * height
 

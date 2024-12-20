@@ -12,7 +12,7 @@ interface UserState {
   setLoading: (loading: boolean) => void
   setProfile: (profile: Profile | null) => void
   fetchProfile: () => Promise<void>
-  updateProfile: (data: Partial<Profile>) => Promise<void>
+  updateProfile: (data: Partial<Profile>) => Promise<{ success: boolean } | void>
 }
 
 export const useUserStore = create<UserState>()(
@@ -60,20 +60,39 @@ export const useUserStore = create<UserState>()(
         const supabase = createClient()
         const { user } = get()
         
-        if (!user) return
-
-        const { error } = await supabase
-          .from('profiles')
-          .update(updates)
-          .eq('id', user.id)
-
-        if (error) {
-          console.error('Error updating profile:', error)
-          return
+        if (!user) {
+          console.log('No user found')
+          return { success: false }
         }
 
-        // Refetch profile
-        get().fetchProfile()
+        try {
+          console.log('Updating profile with:', updates)
+          console.log('For user:', user.id)
+
+          const { data, error } = await supabase
+            .from('profiles')
+            .update({
+              ...updates,
+              updated_at: new Date().toISOString()
+            })
+            .eq('id', user.id)
+            .select()
+
+          if (error) {
+            console.error('Supabase error:', error)
+            throw error
+          }
+
+          console.log('Update response:', data)
+
+          // Refetch profile inmediatamente
+          await get().fetchProfile()
+          
+          return { success: true }
+        } catch (error) {
+          console.error('Error updating profile:', error)
+          return { success: false, error }
+        }
       }
     }),
     {

@@ -56,13 +56,29 @@ export function OnboardingForm() {
   const handleSubmit = async () => {
     setLoading(true)
     try {
-      await updateProfile({
-        ...formData,
+      console.log('Submitting form data:', formData)
+
+      const result = await updateProfile({
+        sleep_hours: formData.sleep_hours,
+        age: formData.age,
+        is_smoker: formData.is_smoker,
+        drinks_alcohol: formData.drinks_alcohol,
         is_onboarded: true,
       })
-      router.push('/dashboard')
+
+      console.log('Update result:', result)
+
+      if (result?.success) {
+        console.log('Update successful, redirecting...')
+        router.push('/dashboard')
+        setTimeout(() => {
+          window.location.href = '/dashboard'
+        }, 100)
+      } else {
+        throw new Error('Failed to update profile')
+      }
     } catch (error) {
-      console.error('Error updating profile:', error)
+      console.error('Error in handleSubmit:', error)
     } finally {
       setLoading(false)
     }
@@ -97,7 +113,7 @@ export function OnboardingForm() {
           <div className="space-y-4">
             <Input
               type="number"
-              min={18}
+              min={16}
               max={100}
               value={formData.age}
               onChange={(e) => setFormData(prev => ({
@@ -108,8 +124,8 @@ export function OnboardingForm() {
               required
             />
             <div className="flex justify-between text-sm text-white/60">
-              <span>Mínimo: 18 años</span>
-              <span>Máximo: 100 años</span>
+              <span>Min: 16 years</span>
+              <span>Max:: 100 years</span>
             </div>
           </div>
         )
