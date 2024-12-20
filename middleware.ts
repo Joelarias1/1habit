@@ -1,47 +1,39 @@
-import { createServerClient } from '@supabase/ssr'
-import { NextResponse, type NextRequest } from 'next/server'
+import { NextResponse } from 'next/server'
+import type { NextRequest } from 'next/server'
+import { createClient } from '@/utils/supabase/middleware'
 
 export async function middleware(request: NextRequest) {
-  let response = NextResponse.next({
-    request,
-  })
+  const res = NextResponse.next()
+  const supabase = createClient(request, res)
+  const { data: { user } } = await supabase.auth.getUser()
 
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll() {
-          return request.cookies.getAll()
-        },
-        setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value, options }) => {
-            response.cookies.set(name, value, options)
-          })
-        },
-      },
-    }
-  )
-
-  const { data: { session } } = await supabase.auth.getSession()
-  const isPublicRoute = ['/', '/login', '/register', '/verify-email', '/404'].includes(request.nextUrl.pathname)
-
-  if (isPublicRoute && session) {
-    const redirectUrl = request.nextUrl.clone()
-    redirectUrl.pathname = '/dashboard'
-    return NextResponse.redirect(redirectUrl)
+  // Si no hay usuario, permitir acceso normal
+  if (!user) {
+    return res
   }
 
-  if (!isPublicRoute && !session) {
-    const redirectUrl = request.nextUrl.clone()
-    redirectUrl.pathname = '/login'
-    redirectUrl.searchParams.set('redirectTo', request.nextUrl.pathname)
-    return NextResponse.redirect(redirectUrl)
+  // Verificar estado de onboarding
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('is_onboarded')
+    .eq('id', user.id)
+    .single()
+
+  const path = request.nextUrl.pathname
+
+  // Redirigir a onboarding si no está onboarded e intenta acceder a dashboard
+  if (!profile?.is_onboarded && path.startsWith('/dashboard')) {
+    return NextResponse.redirect(new URL('/onboarding', request.url))
   }
 
-  return response
+  // Redirigir a dashboard si ya está onboarded e intenta acceder a onboarding
+  if (profile?.is_onboarded && path === '/onboarding') {
+    return NextResponse.redirect(new URL('/dashboard', request.url))
+  }
+
+  return res
 }
 
 export const config = {
-  matcher: ['/((?!api|_next/static|_next/image|assets|favicon.ico).*)'],
+  matcher: ['/dashboard/:path*', '/onboarding']
 } 

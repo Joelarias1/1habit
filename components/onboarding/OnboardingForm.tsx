@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
-import { useProfile } from '@/hooks/useProfile'
+import { useUserStore } from '@/store/userStore'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Switch } from '@/components/ui/switch'
@@ -35,7 +35,7 @@ const steps = [
 
 export function OnboardingForm() {
   const router = useRouter()
-  const { profile, updateProfile } = useProfile()
+  const { profile, updateProfile } = useUserStore()
   const [currentStep, setCurrentStep] = useState(0)
   const [loading, setLoading] = useState(false)
   const [formData, setFormData] = useState({
@@ -60,7 +60,7 @@ export function OnboardingForm() {
         ...formData,
         is_onboarded: true,
       })
-      router.refresh()
+      router.push('/dashboard')
     } catch (error) {
       console.error('Error updating profile:', error)
     } finally {

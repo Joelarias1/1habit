@@ -3,31 +3,14 @@
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import Image from 'next/image'
-import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { useAuth } from '@/hooks/useAuth'
 
 export default function NotFound() {
   const router = useRouter()
-  const { user } = useAuth()
-
-  useEffect(() => {
-    if (user) {
-      router.push('/dashboard')
-    }
-  }, [user, router])
 
   const handleNavigation = (e: React.MouseEvent) => {
     e.preventDefault()
-    if (user) {
-      router.push('/dashboard')
-    } else {
-      router.push('/')
-    }
-  }
-
-  if (user) {
-    return null // Prevents flash while redirecting
+    router.push('/')
   }
 
   return (
@@ -71,11 +54,11 @@ export default function NotFound() {
               onClick={handleNavigation}
               className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 w-full"
             >
-              {user ? 'Return to Dashboard' : 'Go back home'}
+              Go back home
             </button>
             <p className="text-sm text-zinc-500">
               Need help?{" "}
-              <Link href="/contact" className="text-primary hover:underline">
+              <Link href="mailto:contact@1habit.app" className="text-primary hover:underline">
                 Contact Support
               </Link>
             </p>

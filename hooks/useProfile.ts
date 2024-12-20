@@ -1,5 +1,7 @@
+'use client'
+
 import { useState, useEffect } from 'react'
-import { supabase } from '@/utils/supabaseClient'
+import { createClient } from '@/utils/supabase/client'
 import { useAuth } from './useAuth'
 import type { Profile } from '@/types/supabase'
 
@@ -8,62 +10,53 @@ export function useProfile() {
   const [profile, setProfile] = useState<Profile | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<Error | null>(null)
+  const supabase = createClient()
 
   useEffect(() => {
-    let mounted = true
+    const getProfile = async () => {
+      if (!user) {
+        setProfile(null)
+        setLoading(false)
+        return
+      }
 
-    const fetchProfile = async () => {
       try {
-        if (!user?.id) return
-
-        const { data, error: profileError } = await supabase
+        const { data, error } = await supabase
           .from('profiles')
           .select('*')
           .eq('id', user.id)
           .single()
 
-        if (profileError) throw profileError
-
-        if (mounted) {
-          setProfile(data)
-        }
+        if (error) throw error
+        setProfile(data)
       } catch (e) {
-        if (mounted) {
-          setError(e instanceof Error ? e : new Error('Error loading profile'))
-        }
+        console.error('Error fetching profile:', e)
+        setError(e instanceof Error ? e : new Error('Error fetching profile'))
       } finally {
-        if (mounted) {
-          setLoading(false)
-        }
+        setLoading(false)
       }
     }
 
-    fetchProfile()
-    return () => { mounted = false }
-  }, [user?.id])
+    getProfile()
+  }, [user, supabase])
 
-  const updateProfile = async (updates: Partial<Profile>) => {
-    try {
-      if (!user?.id) throw new Error('No user logged in')
+  const getUserDetails = () => {
+    if (!profile) return null
 
-      const { data, error } = await supabase
-        .from('profiles')
-        .update(updates)
-        .eq('id', user.id)
-        .select()
-        .single()
-
-      if (error) throw error
-      setProfile(data)
-      return { data, error: null }
-    } catch (error) {
-      console.error('Error updating profile:', error)
-      return { 
-        data: null, 
-        error: error instanceof Error ? error : new Error('Error updating profile')
-      }
+    return {
+      id: profile.id,
+      email: profile.email,
+      username: profile.full_name || profile.email?.split('@')[0] || 'User',
+      avatarUrl: profile.avatar_url,
+      fullName: profile.full_name,
     }
   }
 
-  return { profile, loading, error, updateProfile }
+  return {
+    profile,
+    loading,
+    error,
+    getUserDetails,
+    setProfile
+  }
 } 

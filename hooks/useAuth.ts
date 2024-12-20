@@ -1,48 +1,62 @@
-import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
-import { supabase } from '@/utils/supabaseClient'
-import { User } from '@supabase/supabase-js'
+'use client'
 
-/**
- * Hook for managing authentication state and operations
- * @returns {Object} Authentication methods and state
- * 
- * @property {User | null} user - Current authenticated user or null
- * @property {(email: string, password: string) => Promise<void>} signIn - Email/password sign in
- * @property {(email: string, password: string) => Promise<void>} signUp - New user registration
- * @property {() => Promise<void>} signOut - Sign out current user
- * @property {boolean} isLoading - Loading state for auth operations
- * @property {string | null} error - Error message if auth operation fails
- * 
- * @example
- * const { user, signIn, error } = useAuth();
- * // Sign in user
- * await signIn('user@example.com', 'password');
- */
+import { useState, useEffect } from 'react'
+import { createClient } from '@/utils/supabase/client'
+import { useRouter } from 'next/navigation'
+import { useUserStore } from '@/store/userStore'
+
 export function useAuth() {
+  const { setUser, setLoading, fetchProfile } = useUserStore()
+  const [error, setError] = useState<Error | null>(null)
+  const supabase = createClient()
   const router = useRouter()
-  const [user, setUser] = useState<User | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_, session) => {
-      setUser(session?.user ?? null)
-      setIsLoading(false)
-    })
+    const getUser = async () => {
+      try {
+        const { data: { user }, error } = await supabase.auth.getUser()
+        if (error) throw error
+        setUser(user)
+        if (user) {
+          await fetchProfile()
+        }
+      } catch (e) {
+        console.error('Error getting user:', e)
+        setError(e instanceof Error ? e : new Error('Error getting user'))
+      } finally {
+        setLoading(false)
+      }
+    }
 
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null)
-      setIsLoading(false)
-    })
+    getUser()
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        setUser(session?.user ?? null)
+        if (session?.user) {
+          await fetchProfile()
+        }
+        setLoading(false)
+      }
+    )
 
     return () => subscription.unsubscribe()
-  }, [])
+  }, [supabase.auth, setUser, setLoading, fetchProfile])
 
-  const signOut = async () => {
-    await supabase.auth.signOut()
-    router.push('/login')
+  const logout = async () => {
+    try {
+      const { error } = await supabase.auth.signOut()
+      if (error) throw error
+      setUser(null)
+      router.push('/login')
+    } catch (e) {
+      console.error('Error signing out:', e)
+      setError(e instanceof Error ? e : new Error('Error signing out'))
+    }
   }
 
-  return { user, isLoading, error, signOut }
+  return {
+    error,
+    logout
+  }
 } 

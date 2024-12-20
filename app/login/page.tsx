@@ -6,12 +6,16 @@ import { QuoteDisplay } from "@/components/auth/QuoteDisplay"
 import Link from "next/link"
 import Image from "next/image"
 import { motion } from "framer-motion"
-import { useSearchParams } from 'next/navigation'
+import { useSearchParams, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
+import { useProfile } from '@/hooks/useProfile'
 
 export default function LoginPage() {
   const searchParams = useSearchParams()
   const [authError, setAuthError] = useState<string | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
+  const { profile } = useProfile()
+  const router = useRouter()
 
   useEffect(() => {
     const error = searchParams.get('error')
@@ -20,8 +24,29 @@ export default function LoginPage() {
     }
   }, [searchParams])
 
+  useEffect(() => {
+    if (profile) {
+      setIsLoading(true)
+      if (!profile.is_onboarded) {
+        router.push('/onboard')
+      } else {
+        router.push('/dashboard')
+      }
+    } else {
+      setIsLoading(false)
+    }
+  }, [profile, router])
+
+  if (isLoading) {
+    return (
+      <div className="h-screen bg-zinc-950 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-white"></div>
+      </div>
+    )
+  }
+
   return (
-    <div className="h-screen overflow-hidden">
+    <div className="h-screen overflow-hidden bg-zinc-950">
       <div className="grid lg:grid-cols-2 h-full">
         <QuoteDisplay />
 

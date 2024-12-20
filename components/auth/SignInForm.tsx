@@ -5,40 +5,36 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import Link from "next/link"
-import { supabase } from "@/utils/supabaseClient"
-import { useRouter } from "next/navigation"
+import { login } from '@/actions/auth'
 
 export function SignInForm() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
-  const router = useRouter()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     try {
       setIsLoading(true)
       setError(null)
+
+      const formData = new FormData()
+      formData.append('email', email)
+      formData.append('password', password)
       
-      const { error: signInError } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      })
+      const result = await login(formData)
 
-      if (signInError) {
-        if (signInError.message.includes('Invalid login credentials')) {
-          throw new Error('Email o contraseña incorrectos')
-        } else if (signInError.message.includes('Email not confirmed')) {
-          throw new Error('Por favor verifica tu email antes de iniciar sesión')
+      if (result?.error) {
+        if (result.error.includes('Invalid login credentials')) {
+          throw new Error('Invalid email or password')
+        } else if (result.error.includes('Email not confirmed')) {
+          throw new Error('Please verify your email before signing in')
         }
-        throw signInError
+        throw new Error(result.error)
       }
-
-      router.push('/dashboard')
-      router.refresh()
     } catch (error) {
-      setError(error instanceof Error ? error.message : 'Error al iniciar sesión')
+      setError(error instanceof Error ? error.message : 'Error signing in')
     } finally {
       setIsLoading(false)
     }

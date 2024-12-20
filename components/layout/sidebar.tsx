@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { 
   LayoutDashboard, 
   Target, 
@@ -14,9 +14,16 @@ import {
   Trophy,
   User
 } from 'lucide-react';
-import { useAuth } from '@/hooks/useAuth';
 import { usePathname } from 'next/navigation';
-import { useProfile } from '@/hooks/useProfile';
+import { useUserStore } from '@/store/userStore';
+import { useRouter } from 'next/navigation';
+import { signOut } from '@/actions/auth'
+
+interface Profile {
+  email?: string;
+  avatar_url?: string;
+  full_name?: string;
+}
 
 const menuItems = [
   {
@@ -56,19 +63,30 @@ const menuItems = [
 
 export function Sidebar() {
   const pathname = usePathname();
+  const router = useRouter();
   const [showMobileMenu, setShowMobileMenu] = useState(false);
-  const { user } = useAuth();
-  const { profile } = useProfile();
-  const { signOut } = useAuth();
+  const { user, profile, setUser } = useUserStore();
+
+  const handleSignOut = async () => {
+    try {
+      const { success } = await signOut()
+      if (success) {
+        useUserStore.getState().setUser(null)
+        useUserStore.getState().setProfile(null)
+        useUserStore.persist.clearStorage()
+        router.push('/login')
+      }
+    } catch (error) {
+      console.error('Error:', error)
+    } finally {
+      setShowMobileMenu(false)
+    }
+  }
 
   // Desktop Sidebar
   const DesktopSidebar = () => (
     <div className="p-6 h-screen hidden lg:flex items-start">
-      <motion.div 
-        initial={{ opacity: 0, x: -20 }}
-        animate={{ opacity: 1, x: 0 }}
-        className="w-[240px] rounded-2xl bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-lg border border-white/20 flex flex-col h-[96vh]"
-      >
+      <div className="w-[240px] rounded-2xl bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-lg border border-white/20 flex flex-col h-[96vh]">
         {/* Logo */}
         <div className="p-4">
           <Link href="/dashboard" className="flex items-center gap-2 px-2">
@@ -98,7 +116,6 @@ export function Sidebar() {
                       : 'text-white/70 hover:bg-white/[0.05] hover:text-white/90'
                   } ${item.disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
                   onClick={e => item.disabled && e.preventDefault()}
-                  title={item.disabled ? 'Coming soon' : ''}
                 >
                   <div className={`shrink-0 p-2 rounded-lg transition-colors ${
                     pathname === item.href
@@ -171,7 +188,7 @@ export function Sidebar() {
 
           {/* Botón de cerrar sesión */}
           <button 
-            onClick={signOut} 
+            onClick={handleSignOut} 
             className="flex items-center gap-3 w-full px-3 py-2.5 text-white/70 hover:text-white/90 hover:bg-white/[0.06] rounded-xl transition-all text-sm font-medium group"
           >
             <div className="p-2 rounded-lg bg-white/[0.05] group-hover:bg-white/[0.08]">
@@ -180,7 +197,7 @@ export function Sidebar() {
             <span>Sign Out</span>
           </button>
         </div>
-      </motion.div>
+      </div>
     </div>
   );
 
@@ -202,9 +219,8 @@ export function Sidebar() {
                         pathname === item.href
                           ? 'text-white'
                           : 'text-white/70 hover:text-white/90'
-                      }`}
+                      } ${item.disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
                       onClick={e => item.disabled && e.preventDefault()}
-                      title={item.disabled ? 'Coming soon' : ''}
                     >
                       <div className={`p-2 rounded-xl transition-colors ${
                         pathname === item.href
@@ -249,48 +265,37 @@ export function Sidebar() {
       </div>
 
       {/* Profile Menu Overlay */}
-      <AnimatePresence>
-        {showMobileMenu && (
-          <>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setShowMobileMenu(false)}
-              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 lg:hidden"
-            />
-            <motion.div
-              initial={{ y: "100%" }}
-              animate={{ y: 0 }}
-              exit={{ y: "100%" }}
-              transition={{ type: "spring", bounce: 0, duration: 0.3 }}
-              className="fixed bottom-20 right-4 w-48 bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-lg border border-white/20 rounded-2xl p-2 z-50 lg:hidden"
-            >
-              <div className="space-y-1">
-                <Link
-                  href="/settings"
-                  className="flex items-center gap-2 w-full p-2 text-white/70 hover:text-white/90 hover:bg-white/[0.06] rounded-xl text-sm"
-                  onClick={() => setShowMobileMenu(false)}
-                >
-                  <div className="p-2 rounded-lg bg-white/[0.05]">
-                    <Settings className="w-5 h-5 opacity-90" />
-                  </div>
-                  <span>Settings</span>
-                </Link>
-                <button 
-                  onClick={signOut} 
-                  className="flex items-center gap-2 w-full p-2 text-white/70 hover:text-white/90 hover:bg-white/[0.06] rounded-xl text-sm"
-                >
-                  <div className="p-2 rounded-lg bg-white/[0.05]">
-                    <LogOut className="w-5 h-5 opacity-90" />
-                  </div>
-                  <span>Sign Out</span>
-                </button>
-              </div>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
+      {showMobileMenu && (
+        <>
+          <div
+            onClick={() => setShowMobileMenu(false)}
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 lg:hidden"
+          />
+          <div className="fixed bottom-20 right-4 w-48 bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-lg border border-white/20 rounded-2xl p-2 z-50 lg:hidden">
+            <div className="space-y-1">
+              <Link
+                href="/settings"
+                className="flex items-center gap-2 w-full p-2 text-white/70 hover:text-white/90 hover:bg-white/[0.06] rounded-xl text-sm"
+                onClick={() => setShowMobileMenu(false)}
+              >
+                <div className="p-2 rounded-lg bg-white/[0.05]">
+                  <Settings className="w-5 h-5 opacity-90" />
+                </div>
+                <span>Settings</span>
+              </Link>
+              <button 
+                onClick={handleSignOut} 
+                className="flex items-center gap-2 w-full p-2 text-white/70 hover:text-white/90 hover:bg-white/[0.06] rounded-xl text-sm"
+              >
+                <div className="p-2 rounded-lg bg-white/[0.05]">
+                  <LogOut className="w-5 h-5 opacity-90" />
+                </div>
+                <span>Sign Out</span>
+              </button>
+            </div>
+          </div>
+        </>
+      )}
     </>
   );
 
