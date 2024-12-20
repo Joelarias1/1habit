@@ -6,6 +6,21 @@ export type Json =
   | { [key: string]: Json | undefined }
   | Json[]
 
+export type Profile = {
+  id: string
+  email: string
+  full_name: string | null
+  avatar_url: string | null
+  timezone: string | null
+  created_at: string | null
+  updated_at: string | null
+  sleep_hours: number | null
+  is_smoker: boolean
+  drinks_alcohol: boolean
+  age: number | null
+  is_onboarded: boolean
+}
+
 export type Database = {
   public: {
     Tables: {
@@ -162,33 +177,9 @@ export type Database = {
         ]
       }
       profiles: {
-        Row: {
-          avatar_url: string | null
-          created_at: string | null
-          email: string
-          full_name: string | null
-          id: string
-          timezone: string | null
-          updated_at: string | null
-        }
-        Insert: {
-          avatar_url?: string | null
-          created_at?: string | null
-          email: string
-          full_name?: string | null
-          id: string
-          timezone?: string | null
-          updated_at?: string | null
-        }
-        Update: {
-          avatar_url?: string | null
-          created_at?: string | null
-          email?: string
-          full_name?: string | null
-          id?: string
-          timezone?: string | null
-          updated_at?: string | null
-        }
+        Row: Profile
+        Insert: Partial<Profile>
+        Update: Partial<Profile>
         Relationships: []
       }
     }

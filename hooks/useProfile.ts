@@ -1,15 +1,7 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '@/utils/supabaseClient'
 import { useAuth } from './useAuth'
-
-interface Profile {
-  id: string
-  email: string
-  full_name: string | null
-  avatar_url: string | null
-  created_at: string | null
-  updated_at: string | null
-}
+import type { Profile } from '@/types/supabase'
 
 export function useProfile() {
   const { user } = useAuth()
@@ -50,5 +42,28 @@ export function useProfile() {
     return () => { mounted = false }
   }, [user?.id])
 
-  return { profile, loading, error }
+  const updateProfile = async (updates: Partial<Profile>) => {
+    try {
+      if (!user?.id) throw new Error('No user logged in')
+
+      const { data, error } = await supabase
+        .from('profiles')
+        .update(updates)
+        .eq('id', user.id)
+        .select()
+        .single()
+
+      if (error) throw error
+      setProfile(data)
+      return { data, error: null }
+    } catch (error) {
+      console.error('Error updating profile:', error)
+      return { 
+        data: null, 
+        error: error instanceof Error ? error : new Error('Error updating profile')
+      }
+    }
+  }
+
+  return { profile, loading, error, updateProfile }
 } 

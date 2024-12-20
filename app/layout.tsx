@@ -1,6 +1,7 @@
 import './globals.css';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
+import { OnboardingCheck } from '@/components/onboarding/OnboardingCheck'
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -32,7 +33,9 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body className={inter.className}>
-        {children}
+        <OnboardingCheck>
+          {children}
+        </OnboardingCheck>
       </body>
     </html>
   );

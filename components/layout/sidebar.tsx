@@ -36,7 +36,8 @@ const menuItems = [
     title: 'Calendar',
     icon: Calendar,
     href: '/calendar',
-    description: 'Track your progress'
+    description: 'Track your progress',
+    disabled: true
   },
   {
     title: 'Analytics',
@@ -48,7 +49,8 @@ const menuItems = [
     title: 'Achievements',
     icon: Trophy,
     href: '/achievements',
-    description: 'Your milestones and rewards'
+    description: 'Your milestones and rewards',
+    disabled: true
   }
 ];
 
@@ -89,12 +91,14 @@ export function Sidebar() {
             {menuItems.map((item) => (
               <li key={item.href}>
                 <Link
-                  href={item.href}
+                  href={item.disabled ? '#' : item.href}
                   className={`flex items-start gap-3 px-3 py-3 rounded-xl transition-all relative group ${
                     pathname === item.href
                       ? 'bg-gradient-to-br from-white/15 to-white/5 text-white border border-white/20'
                       : 'text-white/70 hover:bg-white/[0.05] hover:text-white/90'
-                  }`}
+                  } ${item.disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  onClick={e => item.disabled && e.preventDefault()}
+                  title={item.disabled ? 'Coming soon' : ''}
                 >
                   <div className={`shrink-0 p-2 rounded-lg transition-colors ${
                     pathname === item.href
@@ -193,12 +197,14 @@ export function Sidebar() {
                 {menuItems.map((item) => (
                   <li key={item.href} className="shrink-0">
                     <Link
-                      href={item.href}
+                      href={item.disabled ? '#' : item.href}
                       className={`flex flex-col items-center gap-1 min-w-[4rem] transition-all ${
                         pathname === item.href
                           ? 'text-white'
                           : 'text-white/70 hover:text-white/90'
                       }`}
+                      onClick={e => item.disabled && e.preventDefault()}
+                      title={item.disabled ? 'Coming soon' : ''}
                     >
                       <div className={`p-2 rounded-xl transition-colors ${
                         pathname === item.href
