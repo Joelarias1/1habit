@@ -1,30 +1,45 @@
-import { createMiddlewareClient } from '@supabase/auth-helpers-nextjs'
-import { NextResponse } from 'next/server'
-import type { NextRequest } from 'next/server'
+import { createServerClient } from '@supabase/ssr'
+import { NextResponse, type NextRequest } from 'next/server'
 
-// Rutas que no requieren autenticación
-const publicRoutes = ['/', '/login', '/register', '/verify-email', '/404']
+export async function middleware(request: NextRequest) {
+  let response = NextResponse.next({
+    request,
+  })
 
-export async function middleware(req: NextRequest) {
-  const res = NextResponse.next()
-  const supabase = createMiddlewareClient({ req, res })
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return request.cookies.getAll()
+        },
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value, options }) => {
+            response.cookies.set(name, value, options)
+          })
+        },
+      },
+    }
+  )
+
   const { data: { session } } = await supabase.auth.getSession()
+  const isPublicRoute = ['/', '/login', '/register', '/verify-email', '/404'].includes(request.nextUrl.pathname)
 
-  const isPublicRoute = publicRoutes.includes(req.nextUrl.pathname)
-
-  // Si es una ruta pública y está autenticado, redirigir al dashboard
   if (isPublicRoute && session) {
-    return NextResponse.redirect(new URL('/dashboard', req.url))
-  }
-
-  // Si no es una ruta pública y no está autenticado, redirigir al login
-  if (!isPublicRoute && !session) {
-    const redirectUrl = new URL('/login', req.url)
-    redirectUrl.searchParams.set('redirectTo', req.nextUrl.pathname)
+    const redirectUrl = request.nextUrl.clone()
+    redirectUrl.pathname = '/dashboard'
     return NextResponse.redirect(redirectUrl)
   }
 
-  return res
+  if (!isPublicRoute && !session) {
+    const redirectUrl = request.nextUrl.clone()
+    redirectUrl.pathname = '/login'
+    redirectUrl.searchParams.set('redirectTo', request.nextUrl.pathname)
+    return NextResponse.redirect(redirectUrl)
+  }
+
+  return response
 }
 
 export const config = {

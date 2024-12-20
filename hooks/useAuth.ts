@@ -22,104 +22,27 @@ import { User } from '@supabase/supabase-js'
 export function useAuth() {
   const router = useRouter()
   const [user, setUser] = useState<User | null>(null)
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  // Listen for authentication state changes
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_, session) => {
       setUser(session?.user ?? null)
+      setIsLoading(false)
     })
 
-    // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null)
+      setIsLoading(false)
     })
 
     return () => subscription.unsubscribe()
   }, [])
 
-  // Sign in with email and password
-  const signIn = async (email: string, password: string) => {
-    try {
-      setIsLoading(true)
-      setError(null)
-      
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      })
-
-      if (error) throw error
-
-      router.push('/dashboard')
-      router.refresh()
-    } catch (error) {
-      if (error instanceof Error) {
-        if (error.message.includes('Invalid login credentials')) {
-          setError('Invalid email or password')
-        } else if (error.message.includes('Email not confirmed')) {
-          setError('Please verify your email before signing in')
-        } else {
-          setError('An error occurred during sign in')
-        }
-      }
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  // Register new user
-  const signUp = async (email: string, password: string) => {
-    try {
-      setIsLoading(true)
-      setError(null)
-
-      const { error } = await supabase.auth.signUp({
-        email,
-        password,
-      })
-
-      if (error) throw error
-
-      router.push('/verify-email')
-    } catch (error) {
-      if (error instanceof Error) {
-        if (error.message.includes('User already registered')) {
-          setError('An account with this email already exists')
-        } else {
-          setError('An error occurred during sign up')
-        }
-      }
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  // Sign out current user
   const signOut = async () => {
-    try {
-      setIsLoading(true)
-      setError(null)
-
-      const { error } = await supabase.auth.signOut()
-      if (error) throw error
-
-      router.push('/')
-      router.refresh()
-    } catch (error) {
-      setError('An error occurred during sign out')
-    } finally {
-      setIsLoading(false)
-    }
+    await supabase.auth.signOut()
+    router.push('/login')
   }
 
-  return {
-    user,
-    signIn,
-    signUp,
-    signOut,
-    isLoading,
-    error,
-  }
+  return { user, isLoading, error, signOut }
 } 

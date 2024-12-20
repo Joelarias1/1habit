@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { usePathname } from 'next/navigation';
+import { useProfile } from '@/hooks/useProfile';
 
 const menuItems = [
   {
@@ -55,6 +56,8 @@ export function Sidebar() {
   const pathname = usePathname();
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const { user } = useAuth();
+  const { profile } = useProfile();
+  const { signOut } = useAuth();
 
   // Desktop Sidebar
   const DesktopSidebar = () => (
@@ -62,12 +65,12 @@ export function Sidebar() {
       <motion.div 
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
-        className="w-[240px] rounded-2xl bg-black/30 backdrop-blur-xl border border-white/[0.12] shadow-xl flex flex-col h-[96vh]"
+        className="w-[240px] rounded-2xl bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-lg border border-white/20 flex flex-col h-[96vh]"
       >
         {/* Logo */}
         <div className="p-4">
           <Link href="/dashboard" className="flex items-center gap-2 px-2">
-            <div className="p-1.5 bg-white/[0.05] rounded-xl">
+            <div className="p-1.5 bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-sm rounded-xl border border-white/20">
               <Image
                 src="/assets/img/logo-1habit.png"
                 alt="1habit Logo"
@@ -89,13 +92,13 @@ export function Sidebar() {
                   href={item.href}
                   className={`flex items-start gap-3 px-3 py-3 rounded-xl transition-all relative group ${
                     pathname === item.href
-                      ? 'bg-white/[0.12] text-white'
-                      : 'text-white/70 hover:bg-white/[0.06] hover:text-white/90'
+                      ? 'bg-gradient-to-br from-white/15 to-white/5 text-white border border-white/20'
+                      : 'text-white/70 hover:bg-white/[0.05] hover:text-white/90'
                   }`}
                 >
                   <div className={`shrink-0 p-2 rounded-lg transition-colors ${
                     pathname === item.href
-                      ? 'bg-white/[0.16]'
+                      ? 'bg-gradient-to-br from-white/15 to-white/5 border border-white/20'
                       : 'bg-white/[0.05] group-hover:bg-white/[0.08]'
                   }`}>
                     <item.icon className="w-5 h-5 opacity-90" />
@@ -124,11 +127,11 @@ export function Sidebar() {
         {/* Footer con perfil y logout */}
         <div className="p-3 space-y-2">
           {/* User Profile */}
-          <div className="p-3 rounded-xl bg-white/[0.07] border border-white/[0.12] flex items-center gap-3">
+          <div className="p-3 rounded-xl bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-sm border border-white/20 flex items-center gap-3">
             <div className="relative">
-              {user?.user_metadata?.avatar_url ? (
+              {profile?.avatar_url ? (
                 <Image
-                  src={user.user_metadata.avatar_url}
+                  src={profile.avatar_url}
                   alt="User Avatar"
                   width={40}
                   height={40}
@@ -136,17 +139,17 @@ export function Sidebar() {
                 />
               ) : (
                 <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-white/20 to-white/10 flex items-center justify-center text-white font-medium">
-                  {user?.email?.[0].toUpperCase() || '?'}
+                  {profile?.email?.[0].toUpperCase() || '?'}
                 </div>
               )}
               <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-emerald-500 rounded-full border-2 border-black/80" />
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium text-white/95 truncate">
-                {user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'User'}
+                {profile?.full_name || 'Usuario'}
               </p>
               <p className="text-xs text-white/50 truncate">
-                {user?.email}
+                {profile?.email}
               </p>
             </div>
           </div>
@@ -163,7 +166,10 @@ export function Sidebar() {
           </Link>
 
           {/* Botón de cerrar sesión */}
-          <button className="flex items-center gap-3 w-full px-3 py-2.5 text-white/70 hover:text-white/90 hover:bg-white/[0.06] rounded-xl transition-all text-sm font-medium group">
+          <button 
+            onClick={signOut} 
+            className="flex items-center gap-3 w-full px-3 py-2.5 text-white/70 hover:text-white/90 hover:bg-white/[0.06] rounded-xl transition-all text-sm font-medium group"
+          >
             <div className="p-2 rounded-lg bg-white/[0.05] group-hover:bg-white/[0.08]">
               <LogOut className="w-5 h-5 opacity-90" />
             </div>
@@ -178,16 +184,17 @@ export function Sidebar() {
   const MobileNav = () => (
     <>
       {/* Bottom Navigation Bar */}
-      <div className="fixed bottom-0 left-0 right-0 h-16 bg-black/30 backdrop-blur-xl border-t border-white/[0.12] lg:hidden">
+      <div className="fixed bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-white/10 to-white/5 backdrop-blur-lg border-t border-white/20 lg:hidden">
         <nav className="h-full">
           <div className="h-full overflow-x-auto scrollbar-hide">
-            <div className="h-full flex justify-center">
-              <ul className="h-full flex items-center gap-8 px-6 mx-auto">
+            <div className="h-full flex justify-start md:justify-center">
+              <ul className="h-full flex items-center gap-8 px-8 min-w-max">
+                <li className="w-12 shrink-0" aria-hidden="true" />
                 {menuItems.map((item) => (
-                  <li key={item.href}>
+                  <li key={item.href} className="shrink-0">
                     <Link
                       href={item.href}
-                      className={`flex flex-col items-center gap-1 min-w-[3rem] transition-all ${
+                      className={`flex flex-col items-center gap-1 min-w-[4rem] transition-all ${
                         pathname === item.href
                           ? 'text-white'
                           : 'text-white/70 hover:text-white/90'
@@ -195,7 +202,7 @@ export function Sidebar() {
                     >
                       <div className={`p-2 rounded-xl transition-colors ${
                         pathname === item.href
-                          ? 'bg-white/[0.12]'
+                          ? 'bg-gradient-to-br from-white/15 to-white/5 border border-white/20'
                           : 'hover:bg-white/[0.06]'
                       }`}>
                         <item.icon className="w-5 h-5 opacity-90" />
@@ -204,15 +211,15 @@ export function Sidebar() {
                     </Link>
                   </li>
                 ))}
-                <li>
+                <li className="shrink-0">
                   <button
                     onClick={() => setShowMobileMenu(!showMobileMenu)}
-                    className="flex flex-col items-center gap-1 min-w-[3rem]"
+                    className="flex flex-col items-center gap-1 min-w-[4rem]"
                   >
                     <div className="relative p-2 rounded-xl hover:bg-white/[0.06]">
-                      {user?.user_metadata?.avatar_url ? (
+                      {profile?.avatar_url ? (
                         <Image
-                          src={user.user_metadata.avatar_url}
+                          src={profile.avatar_url}
                           alt="Profile"
                           width={20}
                           height={20}
@@ -220,7 +227,7 @@ export function Sidebar() {
                         />
                       ) : (
                         <div className="w-5 h-5 rounded-lg bg-gradient-to-br from-white/20 to-white/10 flex items-center justify-center text-white text-[10px] font-medium">
-                          {user?.email?.[0].toUpperCase() || '?'}
+                          {profile?.email?.[0].toUpperCase() || '?'}
                         </div>
                       )}
                       <div className="absolute -bottom-0.5 -right-0.5 w-2 h-2 bg-emerald-500 rounded-full border border-black/80" />
@@ -228,6 +235,7 @@ export function Sidebar() {
                     <span className="text-[10px] font-medium text-white/70">Profile</span>
                   </button>
                 </li>
+                <li className="w-12 shrink-0" aria-hidden="true" />
               </ul>
             </div>
           </div>
@@ -250,7 +258,7 @@ export function Sidebar() {
               animate={{ y: 0 }}
               exit={{ y: "100%" }}
               transition={{ type: "spring", bounce: 0, duration: 0.3 }}
-              className="fixed bottom-20 right-4 w-48 bg-black/30 backdrop-blur-xl border border-white/[0.12] rounded-2xl p-2 z-50 lg:hidden"
+              className="fixed bottom-20 right-4 w-48 bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-lg border border-white/20 rounded-2xl p-2 z-50 lg:hidden"
             >
               <div className="space-y-1">
                 <Link
@@ -263,7 +271,10 @@ export function Sidebar() {
                   </div>
                   <span>Settings</span>
                 </Link>
-                <button className="flex items-center gap-2 w-full p-2 text-white/70 hover:text-white/90 hover:bg-white/[0.06] rounded-xl text-sm">
+                <button 
+                  onClick={signOut} 
+                  className="flex items-center gap-2 w-full p-2 text-white/70 hover:text-white/90 hover:bg-white/[0.06] rounded-xl text-sm"
+                >
                   <div className="p-2 rounded-lg bg-white/[0.05]">
                     <LogOut className="w-5 h-5 opacity-90" />
                   </div>

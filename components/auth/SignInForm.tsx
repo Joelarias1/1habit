@@ -5,16 +5,43 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import Link from "next/link"
-import { useAuth } from "@/hooks/useAuth"
+import { supabase } from "@/utils/supabaseClient"
+import { useRouter } from "next/navigation"
 
 export function SignInForm() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-  const { signIn, error, isLoading } = useAuth()
+  const [error, setError] = useState<string | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
+  const router = useRouter()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    await signIn(email, password)
+    try {
+      setIsLoading(true)
+      setError(null)
+      
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      })
+
+      if (signInError) {
+        if (signInError.message.includes('Invalid login credentials')) {
+          throw new Error('Email o contraseña incorrectos')
+        } else if (signInError.message.includes('Email not confirmed')) {
+          throw new Error('Por favor verifica tu email antes de iniciar sesión')
+        }
+        throw signInError
+      }
+
+      router.push('/dashboard')
+      router.refresh()
+    } catch (error) {
+      setError(error instanceof Error ? error.message : 'Error al iniciar sesión')
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
