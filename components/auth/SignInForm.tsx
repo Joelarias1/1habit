@@ -15,26 +15,26 @@ export function SignInForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    try {
-      setIsLoading(true)
-      setError(null)
+    setIsLoading(true)
+    setError(null)
 
+    try {
       const formData = new FormData()
       formData.append('email', email)
       formData.append('password', password)
       
       const result = await login(formData)
+      
+      if (result.error) {
+        setError(result.error)
+        return
+      }
 
-      if (result?.error) {
-        if (result.error.includes('Invalid login credentials')) {
-          throw new Error('Invalid email or password')
-        } else if (result.error.includes('Email not confirmed')) {
-          throw new Error('Please verify your email before signing in')
-        }
-        throw new Error(result.error)
+      if (result.success) {
+        window.location.href = '/dashboard'
       }
     } catch (error) {
-      setError(error instanceof Error ? error.message : 'Error signing in')
+      setError('An unexpected error occurred')
     } finally {
       setIsLoading(false)
     }

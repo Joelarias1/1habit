@@ -7,31 +7,28 @@ import { createClient } from '@/utils/supabase/server'
 export async function login(formData: FormData) {
   const supabase = await createClient()
 
-  const data = {
-    email: formData.get('email') as string,
-    password: formData.get('password') as string,
-  }
+  try {
+    const { data: { user }, error } = await supabase.auth.signInWithPassword({
+      email: formData.get('email') as string,
+      password: formData.get('password') as string,
+    })
 
-  const { error } = await supabase.auth.signInWithPassword(data)
+    if (error) {
+      console.error('Login error:', error.message)
+      return { error: error.message }
+    }
 
-  if (error) {
-    return { error: error.message }
-  }
+    if (!user) {
+      return { error: 'Invalid credentials' }
+    }
 
-  // Verificar si el usuario necesita onboarding
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('is_onboarded')
-    .eq('id', (await supabase.auth.getUser()).data.user!.id)
-    .single()
+    return { success: true }
 
-  revalidatePath('/', 'layout')
-  
-  // Redirigir según el estado de onboarding
-  if (!profile?.is_onboarded) {
-    redirect('/onboarding')
-  } else {
-    redirect('/dashboard')
+  } catch (error) {
+    console.error('Unexpected error:', error)
+    return { 
+      error: 'An unexpected error occurred'
+    }
   }
 }
 
@@ -56,4 +53,22 @@ export async function getUser() {
   }
 
   return { user }
+}
+
+export async function resetPassword(formData: FormData) {
+  const supabase = await createClient()
+  const email = formData.get('email') as string
+
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/auth/callback`,
+  })
+
+  if (error) {
+    return { error: error.message }
+  }
+
+  return { 
+    success: true,
+    message: 'Password reset instructions sent to your email'
+  }
 } 

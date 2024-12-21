@@ -7,33 +7,62 @@ export async function middleware(request: NextRequest) {
   const supabase = createClient(request, res)
   const { data: { user } } = await supabase.auth.getUser()
 
-  // Si no hay usuario, permitir acceso normal
-  if (!user) {
-    return res
-  }
+  // Rutas públicas
+  const publicRoutes = ['/', '/login', '/register', '/recover']
+  const isPublicRoute = publicRoutes.includes(request.nextUrl.pathname)
 
-  // Verificar estado de onboarding
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('is_onboarded')
-    .eq('id', user.id)
-    .single()
+  // Si es ruta pública y hay usuario autenticado
+  if (isPublicRoute && user) {
+    // Verificar estado de onboarding
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('is_onboarded')
+      .eq('id', user.id)
+      .single()
 
-  const path = request.nextUrl.pathname
+    // Si no está onboarded, redirigir a onboarding
+    if (!profile?.is_onboarded) {
+      return NextResponse.redirect(new URL('/onboarding', request.url))
+    }
 
-  // Redirigir a onboarding si no está onboarded e intenta acceder a dashboard
-  if (!profile?.is_onboarded && path.startsWith('/dashboard')) {
-    return NextResponse.redirect(new URL('/onboarding', request.url))
-  }
-
-  // Redirigir a dashboard si ya está onboarded e intenta acceder a onboarding
-  if (profile?.is_onboarded && path === '/onboarding') {
+    // Si está onboarded, redirigir a dashboard
     return NextResponse.redirect(new URL('/dashboard', request.url))
+  }
+
+  // Para rutas protegidas
+  if (!isPublicRoute && !user) {
+    return NextResponse.redirect(new URL('/login', request.url))
+  }
+
+  // Si el usuario está autenticado y trata de acceder a rutas protegidas
+  if (user && !isPublicRoute) {
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('is_onboarded')
+      .eq('id', user.id)
+      .single()
+
+    // Si no está onboarded y no está en la página de onboarding
+    if (!profile?.is_onboarded && request.nextUrl.pathname !== '/onboarding') {
+      return NextResponse.redirect(new URL('/onboarding', request.url))
+    }
+
+    // Si está onboarded y trata de acceder a onboarding
+    if (profile?.is_onboarded && request.nextUrl.pathname === '/onboarding') {
+      return NextResponse.redirect(new URL('/dashboard', request.url))
+    }
   }
 
   return res
 }
 
 export const config = {
-  matcher: ['/dashboard/:path*', '/onboarding']
+  matcher: [
+    '/',
+    '/login',
+    '/register',
+    '/recover',
+    '/dashboard/:path*',
+    '/onboarding',
+  ]
 } 

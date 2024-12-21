@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Switch } from '@/components/ui/switch'
 import { Moon, Clock, Cigarette, Wine, ArrowRight, Check, Skull } from 'lucide-react'
+import { updateUserProfile } from '@/actions/profile'
 
 const steps = [
   {
@@ -44,6 +45,7 @@ export function OnboardingForm() {
     drinks_alcohol: profile?.drinks_alcohol || false,
     age: profile?.age || 25,
   })
+  const [error, setError] = useState<string | null>(null)
 
   const handleNext = () => {
     if (currentStep < steps.length - 1) {
@@ -56,29 +58,21 @@ export function OnboardingForm() {
   const handleSubmit = async () => {
     setLoading(true)
     try {
-      console.log('Submitting form data:', formData)
-
-      const result = await updateProfile({
+      const result = await updateUserProfile({
         sleep_hours: formData.sleep_hours,
         age: formData.age,
         is_smoker: formData.is_smoker,
-        drinks_alcohol: formData.drinks_alcohol,
-        is_onboarded: true,
+        drinks_alcohol: formData.drinks_alcohol
       })
 
-      console.log('Update result:', result)
-
-      if (result?.success) {
-        console.log('Update successful, redirecting...')
-        router.push('/dashboard')
-        setTimeout(() => {
-          window.location.href = '/dashboard'
-        }, 100)
-      } else {
-        throw new Error('Failed to update profile')
+      if (result.error) {
+        setError(result.error)
+        return
       }
+
+      window.location.href = '/dashboard'
     } catch (error) {
-      console.error('Error in handleSubmit:', error)
+      setError('An unexpected error occurred')
     } finally {
       setLoading(false)
     }
