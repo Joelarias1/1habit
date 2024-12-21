@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation'
 import { useUserStore } from '@/store/userStore'
 
 export function useAuth() {
-  const { setUser, setLoading, fetchProfile } = useUserStore()
+  const { setProfile, setLoading, fetchProfile } = useUserStore()
   const [error, setError] = useState<Error | null>(null)
   const supabase = createClient()
   const router = useRouter()
@@ -16,9 +16,10 @@ export function useAuth() {
       try {
         const { data: { user }, error } = await supabase.auth.getUser()
         if (error) throw error
-        setUser(user)
         if (user) {
           await fetchProfile()
+        } else {
+          setProfile(null)
         }
       } catch (e) {
         console.error('Error getting user:', e)
@@ -32,22 +33,23 @@ export function useAuth() {
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
-        setUser(session?.user ?? null)
         if (session?.user) {
           await fetchProfile()
+        } else {
+          setProfile(null)
         }
         setLoading(false)
       }
     )
 
     return () => subscription.unsubscribe()
-  }, [supabase.auth, setUser, setLoading, fetchProfile])
+  }, [supabase.auth, setProfile, setLoading, fetchProfile])
 
   const logout = async () => {
     try {
       const { error } = await supabase.auth.signOut()
       if (error) throw error
-      setUser(null)
+      setProfile(null)
       router.push('/login')
     } catch (e) {
       console.error('Error signing out:', e)
@@ -55,8 +57,5 @@ export function useAuth() {
     }
   }
 
-  return {
-    error,
-    logout
-  }
+  return { error, logout }
 } 

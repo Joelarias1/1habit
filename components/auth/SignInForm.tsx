@@ -10,7 +10,7 @@ import { login } from '@/actions/auth'
 export function SignInForm() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-  const [error, setError] = useState<string | null>(null)
+  const [error, setError] = useState<string | JSX.Element | null>(null)
   const [isLoading, setIsLoading] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -25,8 +25,19 @@ export function SignInForm() {
       
       const result = await login(formData)
       
-      if (result.error) {
-        setError(result.error)
+      if (result?.error) {
+        if (result.code === 'EMAIL_NOT_VERIFIED') {
+          setError(
+            <div className="space-y-2">
+              <p>{result.error}</p>
+              <p className="text-xs opacity-80">
+                Didn&apos;t receive the email? Check your spam folder or request a new verification email.
+              </p>
+            </div>
+          )
+        } else {
+          setError(result.error)
+        }
         return
       }
 

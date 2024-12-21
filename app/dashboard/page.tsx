@@ -1,22 +1,47 @@
 'use client'
 
-import { useProfile } from '@/hooks/useProfile'
+import { useUserStore } from '@/store/userStore'
+import { useEffect } from 'react'
+import Image from 'next/image'
 
 export default function DashboardPage() {
-  const { getUserDetails } = useProfile()
-  const userDetails = getUserDetails()
+  const { profile, loading, fetchProfile } = useUserStore()
+
+  useEffect(() => {
+    fetchProfile()
+  }, [fetchProfile])
+
+  if (loading) {
+    return <div>Loading...</div>
+  }
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div className="bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-lg border border-white/20 rounded-xl p-6">
+    <div className="p-8">
+      <div className="flex items-center gap-4 mb-6">
+        {profile?.avatar_url ? (
+          <Image
+            src={profile.avatar_url}
+            alt="Profile"
+            width={64}
+            height={64}
+            className="rounded-full"
+          />
+        ) : (
+          <div className="w-16 h-16 rounded-full bg-gradient-to-br from-white/20 to-white/10 flex items-center justify-center text-2xl text-white/90">
+            {profile?.email?.[0].toUpperCase()}
+          </div>
+        )}
+        <div>
           <h1 className="text-2xl font-bold text-white">
-            Hello, {userDetails?.username} 👋
+            Welcome back, {profile?.full_name || profile?.email?.split('@')[0]}! 👋
           </h1>
-          <p className="text-white/60 mt-2">
-            Welcome back to your dashboard
+          <p className="text-white/60 mt-1">
+            {profile?.email}
           </p>
         </div>
+      </div>
+      <div className="grid gap-6">
+        {/* Aquí puedes agregar más contenido del dashboard */}
       </div>
     </div>
   )

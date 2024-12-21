@@ -8,14 +8,14 @@ import Image from "next/image"
 import { motion } from "framer-motion"
 import { useSearchParams, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import { useProfile } from '@/hooks/useProfile'
+import { useUserStore } from '@/store/userStore'
 import { GridPattern } from '@/components/ui/grid-pattern'
 
 export default function LoginPage() {
   const searchParams = useSearchParams()
   const [authError, setAuthError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(true)
-  const { profile } = useProfile()
+  const { profile } = useUserStore()
   const router = useRouter()
 
   useEffect(() => {

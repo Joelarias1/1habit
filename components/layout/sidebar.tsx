@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
@@ -18,6 +18,7 @@ import { usePathname } from 'next/navigation';
 import { useUserStore } from '@/store/userStore';
 import { useRouter } from 'next/navigation';
 import { signOut } from '@/actions/auth'
+import UserProfileDisplay from '@/components/layout/UserProfileDisplay'
 
 interface Profile {
   email?: string;
@@ -65,13 +66,16 @@ export function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
   const [showMobileMenu, setShowMobileMenu] = useState(false);
-  const { user, profile, setUser } = useUserStore();
+  const { profile, fetchProfile } = useUserStore();
+
+  useEffect(() => {
+    fetchProfile()
+  }, [fetchProfile])
 
   const handleSignOut = async () => {
     try {
       const { success } = await signOut()
       if (success) {
-        useUserStore.getState().setUser(null)
         useUserStore.getState().setProfile(null)
         useUserStore.persist.clearStorage()
         router.push('/login')
@@ -148,31 +152,8 @@ export function Sidebar() {
         {/* Footer con perfil y logout */}
         <div className="p-3 space-y-2">
           {/* User Profile */}
-          <div className="p-3 rounded-xl bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-sm border border-white/20 flex items-center gap-3">
-            <div className="relative">
-              {profile?.avatar_url ? (
-                <Image
-                  src={profile.avatar_url}
-                  alt="User Avatar"
-                  width={40}
-                  height={40}
-                  className="rounded-lg"
-                />
-              ) : (
-                <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-white/20 to-white/10 flex items-center justify-center text-white font-medium">
-                  {profile?.email?.[0].toUpperCase() || '?'}
-                </div>
-              )}
-              <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-emerald-500 rounded-full border-2 border-black/80" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-white/95 truncate">
-                {profile?.full_name || 'Usuario'}
-              </p>
-              <p className="text-xs text-white/50 truncate">
-                {profile?.email}
-              </p>
-            </div>
+          <div className="p-3 rounded-xl bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-sm border border-white/20">
+            <UserProfileDisplay showEmail={true} size="md" />
           </div>
 
           {/* Settings */}
@@ -238,22 +219,7 @@ export function Sidebar() {
                     onClick={() => setShowMobileMenu(!showMobileMenu)}
                     className="flex flex-col items-center gap-1 min-w-[4rem]"
                   >
-                    <div className="relative p-2 rounded-xl hover:bg-white/[0.06]">
-                      {profile?.avatar_url ? (
-                        <Image
-                          src={profile.avatar_url}
-                          alt="Profile"
-                          width={20}
-                          height={20}
-                          className="rounded-lg w-5 h-5"
-                        />
-                      ) : (
-                        <div className="w-5 h-5 rounded-lg bg-gradient-to-br from-white/20 to-white/10 flex items-center justify-center text-white text-[10px] font-medium">
-                          {profile?.email?.[0].toUpperCase() || '?'}
-                        </div>
-                      )}
-                      <div className="absolute -bottom-0.5 -right-0.5 w-2 h-2 bg-emerald-500 rounded-full border border-black/80" />
-                    </div>
+                    <UserProfileDisplay size="sm" />
                     <span className="text-[10px] font-medium text-white/70">Profile</span>
                   </button>
                 </li>

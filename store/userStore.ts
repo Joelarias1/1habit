@@ -1,100 +1,83 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import { User } from '@supabase/supabase-js'
 import { createClient } from '@/utils/supabase/client'
-import type { Profile } from '@/types/supabase'
+
+interface Profile {
+  id: string
+  email: string
+  full_name: string | null
+  avatar_url: string | null
+  is_onboarded: boolean
+  age: number | null
+  sleep_hours: number | null
+  is_smoker: boolean
+  drinks_alcohol: boolean
+  timezone: string | null
+  created_at: string
+  updated_at: string
+}
 
 interface UserState {
-  user: User | null
-  loading: boolean
   profile: Profile | null
-  setUser: (user: User | null) => void
-  setLoading: (loading: boolean) => void
+  loading: boolean
   setProfile: (profile: Profile | null) => void
+  setLoading: (loading: boolean) => void
   fetchProfile: () => Promise<void>
-  updateProfile: (data: Partial<Profile>) => Promise<{ success: boolean } | void>
+  updateProfile: (data: Partial<Profile>) => Promise<{ success?: boolean; error?: string }>
 }
 
 export const useUserStore = create<UserState>()(
   persist(
-    (set, get) => ({
-      user: null,
-      loading: true,
+    (set) => ({
       profile: null,
-      setUser: (user) => set({ user }),
-      setLoading: (loading) => set({ loading }),
+      loading: true,
       setProfile: (profile) => set({ profile }),
+      setLoading: (loading) => set({ loading }),
       fetchProfile: async () => {
         const supabase = createClient()
-        const { user } = get()
-        
-        if (!user) return
-
-        const { data, error } = await supabase
-          .from('profiles')
-          .select(`
-            id,
-            email,
-            full_name,
-            avatar_url,
-            timezone,
-            created_at,
-            updated_at,
-            sleep_hours,
-            is_smoker,
-            drinks_alcohol,
-            age,
-            is_onboarded
-          `)
-          .eq('id', user.id)
-          .single()
-
-        if (error) {
-          console.error('Error fetching profile:', error)
-          return
-        }
-
-        set({ profile: data })
-      },
-      updateProfile: async (updates: Partial<Profile>) => {
-        const supabase = createClient()
-        const { user } = get()
-        
-        if (!user) {
-          console.log('No active session')
-          return { success: false, error: 'No active session' }
-        }
-
         try {
-          const { data, error } = await supabase
+          const { data: { user } } = await supabase.auth.getUser()
+          
+          if (!user) {
+            set({ profile: null, loading: false })
+            return
+          }
+
+          const { data: profile } = await supabase
             .from('profiles')
-            .update({
-              ...updates,
-              updated_at: new Date().toISOString()
-            })
+            .select('*')
             .eq('id', user.id)
-            .select()
+            .single()
+
+          set({ profile, loading: false })
+        } catch (error) {
+          console.error('Error fetching profile:', error)
+          set({ loading: false })
+        }
+      },
+      updateProfile: async (data) => {
+        const supabase = createClient()
+        try {
+          const { data: { user } } = await supabase.auth.getUser()
+          if (!user) return { error: 'No user found' }
+
+          const { error } = await supabase
+            .from('profiles')
+            .update(data)
+            .eq('id', user.id)
 
           if (error) throw error
-
-          // Refetch solo si hay sesión activa
-          try {
-            await get().fetchProfile()
-          } catch (e) {
-            // Ignorar errores de fetchProfile durante el logout
-            console.log('Session ended, skipping profile fetch')
-          }
-          
+          await useUserStore.getState().fetchProfile()
           return { success: true }
         } catch (error) {
           console.error('Error updating profile:', error)
-          return { success: false, error }
+          return { error: 'Failed to update profile' }
         }
       }
     }),
     {
       name: 'user-storage',
-      partialize: (state) => ({ user: state.user, profile: state.profile })
+      partialize: (state) => ({ profile: state.profile })
     }
   )
 ) 
