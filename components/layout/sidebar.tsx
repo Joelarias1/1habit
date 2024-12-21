@@ -89,12 +89,12 @@ export function Sidebar() {
 
   // Desktop Sidebar
   const DesktopSidebar = () => (
-    <div className="p-6 h-screen hidden lg:flex items-start">
-      <div className="w-[240px] rounded-2xl bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-lg border border-white/20 flex flex-col h-[96vh]">
+    <div className="h-screen hidden lg:block">
+      <div className="w-[280px] h-full bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-lg border-r border-white/10">
         {/* Logo */}
-        <div className="p-4">
-          <Link href="/dashboard" className="flex items-center gap-2 px-2">
-            <div className="p-1.5 bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-sm rounded-xl border border-white/20">
+        <div className="p-6">
+          <Link href="/dashboard" className="flex items-center gap-2">
+            <div className="p-1.5 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20">
               <Image
                 src="/assets/img/logo-1habit.png"
                 alt="1habit Logo"
@@ -107,8 +107,17 @@ export function Sidebar() {
           </Link>
         </div>
 
+        {/* Profile */}
+        <div className="px-6 py-4">
+          <UserProfileDisplay 
+            showEmail={true} 
+            size="lg"
+            className="flex flex-col items-center"
+          />
+        </div>
+
         {/* Menu principal */}
-        <nav className="flex-1 px-3 py-4">
+        <nav className="px-3 py-4 flex-1">
           <ul className="space-y-1">
             {menuItems.map((item) => (
               <li key={item.href}>
@@ -116,14 +125,14 @@ export function Sidebar() {
                   href={item.disabled ? '#' : item.href}
                   className={`flex items-start gap-3 px-3 py-3 rounded-xl transition-all relative group ${
                     pathname === item.href
-                      ? 'bg-gradient-to-br from-white/15 to-white/5 text-white border border-white/20'
+                      ? 'bg-white/10 text-white border border-white/10'
                       : 'text-white/70 hover:bg-white/[0.05] hover:text-white/90'
                   } ${item.disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
                   onClick={e => item.disabled && e.preventDefault()}
                 >
                   <div className={`shrink-0 p-2 rounded-lg transition-colors ${
                     pathname === item.href
-                      ? 'bg-gradient-to-br from-white/15 to-white/5 border border-white/20'
+                      ? 'bg-white/10 border border-white/10'
                       : 'bg-white/[0.05] group-hover:bg-white/[0.08]'
                   }`}>
                     <item.icon className="w-5 h-5 opacity-90" />
@@ -149,34 +158,29 @@ export function Sidebar() {
           </ul>
         </nav>
 
-        {/* Footer con perfil y logout */}
-        <div className="p-3 space-y-2">
-          {/* User Profile */}
-          <div className="p-3 rounded-xl bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-sm border border-white/20">
-            <UserProfileDisplay showEmail={true} size="md" />
+        {/* Footer con settings y logout */}
+        <div className="absolute bottom-0 left-0 right-0 p-3 border-t border-white/10 bg-gradient-to-t from-white/5 to-transparent">
+          <div className="grid gap-1">
+            <Link
+              href="/settings"
+              className="flex items-center gap-3 w-full px-3 py-2.5 text-white/70 hover:text-white/90 hover:bg-white/[0.06] rounded-xl transition-all text-sm font-medium group"
+            >
+              <div className="p-2 rounded-lg bg-white/[0.05] group-hover:bg-white/[0.08]">
+                <Settings className="w-5 h-5 opacity-90" />
+              </div>
+              <span>Settings</span>
+            </Link>
+
+            <button 
+              onClick={handleSignOut}
+              className="flex items-center gap-3 w-full px-3 py-2.5 text-white/70 hover:text-white/90 hover:bg-white/[0.06] rounded-xl transition-all text-sm font-medium group"
+            >
+              <div className="p-2 rounded-lg bg-white/[0.05] group-hover:bg-white/[0.08]">
+                <LogOut className="w-5 h-5 opacity-90" />
+              </div>
+              <span>Sign Out</span>
+            </button>
           </div>
-
-          {/* Settings */}
-          <Link
-            href="/settings"
-            className="flex items-center gap-3 w-full px-3 py-2.5 text-white/70 hover:text-white/90 hover:bg-white/[0.06] rounded-xl transition-all text-sm font-medium group"
-          >
-            <div className="p-2 rounded-lg bg-white/[0.05] group-hover:bg-white/[0.08]">
-              <Settings className="w-5 h-5 opacity-90" />
-            </div>
-            <span>Settings</span>
-          </Link>
-
-          {/* Botón de cerrar sesión */}
-          <button 
-            onClick={handleSignOut} 
-            className="flex items-center gap-3 w-full px-3 py-2.5 text-white/70 hover:text-white/90 hover:bg-white/[0.06] rounded-xl transition-all text-sm font-medium group"
-          >
-            <div className="p-2 rounded-lg bg-white/[0.05] group-hover:bg-white/[0.08]">
-              <LogOut className="w-5 h-5 opacity-90" />
-            </div>
-            <span>Sign Out</span>
-          </button>
         </div>
       </div>
     </div>
@@ -186,7 +190,7 @@ export function Sidebar() {
   const MobileNav = () => (
     <>
       {/* Bottom Navigation Bar */}
-      <div className="fixed bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-white/10 to-white/5 backdrop-blur-lg border-t border-white/20 lg:hidden">
+      <div className="fixed bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-white/10 to-white/5 backdrop-blur-lg border-t border-white/20 lg:hidden z-50">
         <nav className="h-full">
           <div className="h-full overflow-x-auto scrollbar-hide">
             <div className="h-full flex justify-start md:justify-center">
@@ -239,7 +243,7 @@ export function Sidebar() {
         <>
           <div
             onClick={() => setShowMobileMenu(false)}
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 lg:hidden"
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 lg:hidden"
           />
           <div className="fixed bottom-20 right-4 w-48 bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-lg border border-white/20 rounded-2xl p-2 z-50 lg:hidden">
             <div className="space-y-1">

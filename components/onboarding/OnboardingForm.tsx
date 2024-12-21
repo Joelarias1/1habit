@@ -35,8 +35,7 @@ const steps = [
 ]
 
 export function OnboardingForm() {
-  const router = useRouter()
-  const { profile, updateProfile } = useUserStore()
+  const { profile, setProfile } = useUserStore()
   const [currentStep, setCurrentStep] = useState(0)
   const [loading, setLoading] = useState(false)
   const [formData, setFormData] = useState({

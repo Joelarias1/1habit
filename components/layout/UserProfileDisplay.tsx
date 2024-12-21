@@ -1,100 +1,71 @@
 import { memo } from 'react'
 import { useUserStore } from '@/store/userStore'
-import Image from 'next/image'
-import { Skeleton } from '@/components/ui/skeleton'
 import { cn } from '@/lib/utils'
 
 interface UserProfileProps {
   showEmail?: boolean
-  showDetails?: boolean
   size?: 'sm' | 'md' | 'lg'
   photoOnly?: boolean
+  className?: string
 }
 
 const UserProfileDisplay = memo(({ 
   showEmail = false, 
-  showDetails = false,
   size = 'md',
-  photoOnly = false
+  photoOnly = false,
+  className
 }: UserProfileProps) => {
   const { profile, loading } = useUserStore()
 
   const sizes = {
     sm: {
-      avatar: 'w-5 h-5',
+      avatar: 'w-8 h-8',
       text: 'text-xs',
       email: 'text-[10px]',
-      indicator: 'w-2 h-2 -bottom-0.5 -right-0.5'
+      indicator: 'w-2 h-2'
     },
     md: {
-      avatar: 'w-8 h-8',
+      avatar: 'w-10 h-10',
       text: 'text-sm',
       email: 'text-xs',
-      indicator: 'w-3 h-3'
+      indicator: 'w-2.5 h-2.5'
     },
     lg: {
-      avatar: 'w-12 h-12',
+      avatar: 'w-16 h-16',
       text: 'text-base',
       email: 'text-sm',
-      indicator: 'w-4 h-4'
+      indicator: 'w-3 h-3'
     }
   }
 
-  if (loading) {
-    return (
-      <div className="flex items-center gap-2">
-        <div className="relative">
-          <Skeleton className={cn(sizes[size].avatar, "rounded-full")} />
-          <div className={cn(
-            sizes[size].indicator,
-            "absolute -bottom-1 -right-1 rounded-full bg-white/10"
-          )} />
-        </div>
-        {!photoOnly && showEmail ? (
-          <div className="space-y-2">
-            <Skeleton className="h-4 w-24" />
-            <Skeleton className="h-3 w-32" />
-          </div>
-        ) : null}
-      </div>
-    )
-  }
+
 
   if (!profile) return null
 
   return (
-    <div className="flex items-center gap-2">
+    <div className={cn("flex flex-col", className)}>
       <div className="relative">
         <div className={cn(
           sizes[size].avatar,
-          "rounded-full bg-gradient-to-br from-white/20 to-white/10 flex items-center justify-center text-white font-medium overflow-hidden"
+          "rounded-full bg-white/10 flex items-center justify-center text-white font-medium relative"
         )}>
-          {profile.avatar_url ? (
-            <Image
-              src={profile.avatar_url}
-              alt={profile.full_name || 'Profile'}
-              fill
-              className="object-cover"
-            />
-          ) : (
-            <span className={sizes[size].text}>
-              {profile.email[0].toUpperCase()}
-            </span>
-          )}
+          <span className={sizes[size].text}>
+            {profile.email[0].toUpperCase()}
+          </span>
         </div>
         <div className={cn(
           sizes[size].indicator,
-          "absolute -bottom-1 -right-1 rounded-full bg-emerald-500 border-2 border-black/80"
+          "absolute -bottom-1 -right-1 rounded-full bg-emerald-500 ring-2 ring-black"
         )} />
       </div>
       {!photoOnly && showEmail && (
-        <div className="flex flex-col min-w-0">
-          <span className={cn("font-medium text-white/90 truncate", sizes[size].text)}>
+        <div className="mt-3 text-center">
+          <h3 className="font-medium text-white">
             {profile.full_name || profile.email?.split('@')[0]}
-          </span>
-          <span className={cn("text-white/60 truncate", sizes[size].email)}>
+          </h3>
+          <p className="text-xs text-white/60 mt-0.5">
             {profile.email}
-          </span>
+          </p>
         </div>
       )}
     </div>
