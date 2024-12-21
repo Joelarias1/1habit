@@ -219,8 +219,12 @@ export function Sidebar() {
                     onClick={() => setShowMobileMenu(!showMobileMenu)}
                     className="flex flex-col items-center gap-1 min-w-[4rem]"
                   >
-                    <UserProfileDisplay size="sm" />
-                    <span className="text-[10px] font-medium text-white/70">Profile</span>
+                    <div className="p-2 rounded-xl transition-colors hover:bg-white/[0.06]">
+                      <UserProfileDisplay size="sm" photoOnly />
+                    </div>
+                    <span className="text-[10px] font-medium text-white/70">
+                      {profile?.full_name?.split(' ')[0] || 'Profile'}
+                    </span>
                   </button>
                 </li>
                 <li className="w-12 shrink-0" aria-hidden="true" />

@@ -8,12 +8,14 @@ interface UserProfileProps {
   showEmail?: boolean
   showDetails?: boolean
   size?: 'sm' | 'md' | 'lg'
+  photoOnly?: boolean
 }
 
 const UserProfileDisplay = memo(({ 
   showEmail = false, 
   showDetails = false,
-  size = 'md'
+  size = 'md',
+  photoOnly = false
 }: UserProfileProps) => {
   const { profile, loading } = useUserStore()
 
@@ -22,7 +24,7 @@ const UserProfileDisplay = memo(({
       avatar: 'w-5 h-5',
       text: 'text-xs',
       email: 'text-[10px]',
-      indicator: 'w-2 h-2'
+      indicator: 'w-2 h-2 -bottom-0.5 -right-0.5'
     },
     md: {
       avatar: 'w-8 h-8',
@@ -48,12 +50,12 @@ const UserProfileDisplay = memo(({
             "absolute -bottom-1 -right-1 rounded-full bg-white/10"
           )} />
         </div>
-        {!showEmail ? null : (
+        {!photoOnly && showEmail ? (
           <div className="space-y-2">
             <Skeleton className="h-4 w-24" />
             <Skeleton className="h-3 w-32" />
           </div>
-        )}
+        ) : null}
       </div>
     )
   }
@@ -85,7 +87,7 @@ const UserProfileDisplay = memo(({
           "absolute -bottom-1 -right-1 rounded-full bg-emerald-500 border-2 border-black/80"
         )} />
       </div>
-      {!showEmail ? null : (
+      {!photoOnly && showEmail && (
         <div className="flex flex-col min-w-0">
           <span className={cn("font-medium text-white/90 truncate", sizes[size].text)}>
             {profile.full_name || profile.email?.split('@')[0]}
