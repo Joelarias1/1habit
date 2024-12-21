@@ -23,7 +23,6 @@ interface UserState {
   setProfile: (profile: Profile | null) => void
   setLoading: (loading: boolean) => void
   fetchProfile: () => Promise<void>
-  updateProfile: (data: Partial<Profile>) => Promise<{ success?: boolean; error?: string }>
 }
 
 export const useUserStore = create<UserState>()(
@@ -49,29 +48,13 @@ export const useUserStore = create<UserState>()(
             .eq('id', user.id)
             .single()
 
-          set({ profile, loading: false })
+          set({ 
+            profile, 
+            loading: false  // Asegurarnos de que loading se establece en false
+          })
         } catch (error) {
           console.error('Error fetching profile:', error)
           set({ loading: false })
-        }
-      },
-      updateProfile: async (data) => {
-        const supabase = createClient()
-        try {
-          const { data: { user } } = await supabase.auth.getUser()
-          if (!user) return { error: 'No user found' }
-
-          const { error } = await supabase
-            .from('profiles')
-            .update(data)
-            .eq('id', user.id)
-
-          if (error) throw error
-          await useUserStore.getState().fetchProfile()
-          return { success: true }
-        } catch (error) {
-          console.error('Error updating profile:', error)
-          return { error: 'Failed to update profile' }
         }
       }
     }),

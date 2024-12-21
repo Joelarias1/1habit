@@ -35,8 +35,10 @@ export function SignInForm() {
               </p>
             </div>
           )
+          setIsLoading(false)
         } else {
           setError(result.error)
+          setIsLoading(false)
         }
         return
       }
@@ -46,7 +48,6 @@ export function SignInForm() {
       }
     } catch (error) {
       setError('An unexpected error occurred')
-    } finally {
       setIsLoading(false)
     }
   }

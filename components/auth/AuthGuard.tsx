@@ -1,47 +1,20 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
-import { supabase } from '@/utils/supabaseClient'
-import { Loading } from '@/components/ui/loading'
+import { useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+import { useUserStore } from '@/store/userStore'
 
-interface AuthGuardProps {
-  children: React.ReactNode
-}
-
-export function AuthGuard({ children }: AuthGuardProps) {
+export function AuthGuard({ children }: { children: React.ReactNode }) {
   const router = useRouter()
-  const searchParams = useSearchParams()
-  const [isLoading, setIsLoading] = useState(true)
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const { profile } = useUserStore()
 
   useEffect(() => {
-    const checkAuth = async () => {
-      const { data: { session } } = await supabase.auth.getSession()
-      
-      if (!session) {
-        const redirectTo = searchParams.get('redirectTo')
-        router.push(`/login${redirectTo ? `?redirectTo=${redirectTo}` : ''}`)
-        return
-      }
-
-      setIsAuthenticated(true)
+    if (!profile) {
+      router.push('/login')
     }
+  }, [profile, router])
 
-    checkAuth()
-  }, [router, searchParams])
-
-  const handleLoadingComplete = () => {
-    setIsLoading(false)
-  }
-
-  if (!isAuthenticated) {
-    return <Loading onLoadingComplete={handleLoadingComplete} />
-  }
-
-  if (isLoading) {
-    return <Loading onLoadingComplete={handleLoadingComplete} />
-  }
+  if (!profile) return null
 
   return <>{children}</>
 } 
