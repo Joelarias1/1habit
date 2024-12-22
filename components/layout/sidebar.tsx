@@ -89,8 +89,8 @@ export function Sidebar() {
 
   // Desktop Sidebar
   const DesktopSidebar = () => (
-    <div className="h-screen hidden lg:block">
-      <div className="w-[280px] h-full bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-lg border-r border-white/10">
+    <div className="hidden lg:block">
+      <div className="fixed top-0 left-0 w-[280px] min-h-screen bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-lg border-r border-white/10">
         {/* Logo */}
         <div className="p-6">
           <Link href="/dashboard" className="flex items-center gap-2">

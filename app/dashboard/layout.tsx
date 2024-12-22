@@ -72,17 +72,15 @@ export default function DashboardLayout({
           transition={{ duration: 0.4 }}
         >
           <AuthGuard>
-            <div className="min-h-screen">
+            <div className="min-h-screen bg-black">
               <div className="fixed inset-0">
                 <GridPattern className="opacity-30" />
                 <div className="absolute inset-0" />
               </div>
-              <div className="relative flex min-h-screen">
+              <div className="relative">
                 <Sidebar />
-                <main className="flex-1 overflow-auto">
-                  <div className="container mx-auto p-6">
-                    {children}
-                  </div>
+                <main className="lg:pl-[280px] pt-4 md:pt-6">
+                  {children}
                 </main>
               </div>
             </div>
