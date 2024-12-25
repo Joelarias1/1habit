@@ -1,14 +1,15 @@
 "use client";
 
+import * as React from "react";
+import { motion, HTMLMotionProps } from "framer-motion";
 import { cn } from "@/lib/utils";
-import { motion } from "framer-motion";
-import { ButtonHTMLAttributes, forwardRef } from "react";
 
-interface GradientButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+interface GradientButtonProps extends Omit<HTMLMotionProps<"button">, "className"> {
   variant?: "primary" | "secondary";
+  className?: string;
 }
 
-export const GradientButton = forwardRef<HTMLButtonElement, GradientButtonProps>(
+const GradientButton = React.forwardRef<HTMLButtonElement, GradientButtonProps>(
   ({ className, variant = "primary", children, ...props }, ref) => {
     return (
       <motion.button
@@ -16,16 +17,18 @@ export const GradientButton = forwardRef<HTMLButtonElement, GradientButtonProps>
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
         className={cn(
-          "relative group px-8 py-4 rounded-xl overflow-hidden",
-          variant === "primary" && "bg-primary text-primary-foreground",
-          variant === "secondary" && "bg-secondary text-secondary-foreground",
+          "relative inline-flex items-center justify-center overflow-hidden rounded-xl px-8 py-3 font-medium transition-all",
+          variant === "primary" && "bg-white text-black hover:bg-white/90",
+          variant === "secondary" && "bg-white/10 text-white hover:bg-white/[0.15]",
           className
         )}
         {...props}
       >
-        <div className="absolute inset-0 bg-gradient-to-r from-primary/50 via-secondary/50 to-primary/50 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-        <span className="relative">{children}</span>
+        {children}
       </motion.button>
     );
   }
 );
+GradientButton.displayName = "GradientButton";
+
+export { GradientButton };
