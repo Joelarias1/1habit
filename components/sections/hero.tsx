@@ -84,11 +84,10 @@ export function Hero() {
               className="flex items-center justify-center gap-4"
             >
               <Link
-                href="/register"
-                className="inline-flex items-center px-6 py-3 text-sm font-medium text-primary-foreground bg-primary rounded-lg hover:opacity-90 transition-opacity"
+                href="/soon"
+                className="px-8 py-3 bg-white text-black rounded-xl transition-all hover:scale-105"
               >
                 Start Your Journey
-                <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
               <Link
                 href="#dashboard"

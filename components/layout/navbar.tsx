@@ -78,10 +78,10 @@ export function Navbar() {
           
           <div className="ml-auto flex items-center gap-8">
             <Link 
-              href="/login" 
+              href="/soon"
               className="px-4 py-2 rounded-lg bg-zinc-800 text-white text-sm font-medium transition-all hover:bg-zinc-700 hover:scale-105 active:scale-95 border border-zinc-700 hover:border-zinc-600"
             >
-              Sign In
+              Coming Soon
             </Link>
 
             <div className="h-6 w-px bg-white/20" />
@@ -130,10 +130,10 @@ export function Navbar() {
               <div className="h-px w-full bg-white/20" />
               
               <Link 
-                href="/login"
+                href="/soon"
                 className="w-full px-4 py-3 rounded-lg bg-zinc-800 text-white text-sm font-medium transition-all hover:bg-zinc-700 active:scale-95 border border-zinc-700 hover:border-zinc-600"
               >
-                Sign In
+                Coming Soon
               </Link>
 
               <div className="flex justify-center gap-4">

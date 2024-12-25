@@ -60,11 +60,10 @@ export function CTA() {
             className="flex justify-center"
           >
             <Link
-              href="/register"
-              className="inline-flex items-center px-8 py-4 text-base font-medium bg-white text-black rounded-lg hover:bg-white/90 transition-colors shadow-lg"
+              href="/soon"
+              className="px-8 py-3 bg-white text-black rounded-xl transition-all hover:scale-105"
             >
-              GET STARTED
-              <ArrowRight className="ml-2 h-5 w-5" />
+              Get Started Now
             </Link>
           </motion.div>
         </motion.div>
