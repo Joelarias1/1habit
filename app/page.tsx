@@ -6,6 +6,7 @@ import { Features } from "@/components/sections/services";
 import { CTA } from "@/components/sections/cta";
 import { Footer } from "@/components/layout/footer";
 import { Mission } from "@/components/sections/mission";
+import { config } from '@/config/environment'
 
 export default function Home() {
   return (
