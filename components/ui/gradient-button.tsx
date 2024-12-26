@@ -1,14 +1,14 @@
 "use client";
 
+import * as React from "react";
+import { motion, MotionProps, HTMLMotionProps } from "framer-motion";
 import { cn } from "@/lib/utils";
-import { motion } from "framer-motion";
-import { ButtonHTMLAttributes, forwardRef } from "react";
 
-interface GradientButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+interface GradientButtonProps extends HTMLMotionProps<"button"> {
   variant?: "primary" | "secondary";
 }
 
-export const GradientButton = forwardRef<HTMLButtonElement, GradientButtonProps>(
+const GradientButton = React.forwardRef<HTMLButtonElement, GradientButtonProps>(
   ({ className, variant = "primary", children, ...props }, ref) => {
     return (
       <motion.button
@@ -24,8 +24,12 @@ export const GradientButton = forwardRef<HTMLButtonElement, GradientButtonProps>
         {...props}
       >
         <div className="absolute inset-0 bg-gradient-to-r from-primary/50 via-secondary/50 to-primary/50 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-        <span className="relative">{children}</span>
+        <span className="relative">{children as React.ReactNode}</span>
       </motion.button>
     );
   }
 );
+
+GradientButton.displayName = "GradientButton";
+
+export { GradientButton };

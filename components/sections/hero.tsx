@@ -84,7 +84,7 @@ export function Hero() {
               className="flex items-center justify-center gap-4"
             >
               <Link
-                href="/register"
+                href="/soon"
                 className="inline-flex items-center px-6 py-3 text-sm font-medium text-primary-foreground bg-primary rounded-lg hover:opacity-90 transition-opacity"
               >
                 Start Your Journey

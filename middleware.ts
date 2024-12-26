@@ -1,8 +1,10 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
-import { createClient } from '@/utils/supabase/middleware'
+// import { createClient } from '@/utils/supabase/middleware'  // Comentado temporalmente
 
 export async function middleware(request: NextRequest) {
+  // Código original comentado
+  /*
   const res = NextResponse.next()
   const supabase = createClient(request, res)
   const { data: { user } } = await supabase.auth.getUser()
@@ -54,15 +56,28 @@ export async function middleware(request: NextRequest) {
   }
 
   return res
+  */
+
+  // Nueva lógica simple para redireccionar a /soon
+  const protectedRoutes = ['/login', '/register']
+  
+  if (protectedRoutes.some(route => request.nextUrl.pathname.startsWith(route))) {
+    return NextResponse.redirect(new URL('/soon', request.url))
+  }
+  
+  return NextResponse.next()
 }
 
 export const config = {
   matcher: [
-    '/',
     '/login',
     '/register',
+    // Rutas originales comentadas
+    /*
+    '/',
     '/recover',
     '/dashboard/:path*',
     '/onboarding',
+    */
   ]
 } 
